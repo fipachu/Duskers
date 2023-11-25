@@ -9,6 +9,20 @@ TITLE = """\
 +===========================================================================================+\
 """
 
+HUB = """\
+__________(LOG)__________________________________________________(LOG)__________
++==============================================================================+
+
+
+                                 (ROBOT IMAGES)
+
+
++==============================================================================+
+|                  [Ex]plore                          [Up]grade                |
+|                  [Save]                             [M]enu                   |
++==============================================================================+\
+"""
+
 COMMAND = "Your command:\n"
 NAME = "Enter your name:\n"
 
@@ -27,36 +41,62 @@ def play():
     name = _get_input(NAME, False)
 
     print(f"Greetings, commander {name}!")
-    print("Are you ready to begin?", "    [Yes] [No]", sep="\n", end="\n\n")
+    print(
+        "Are you ready to begin?",
+        "    [Yes] [No] Return to Main[Menu]",
+        sep="\n",
+        end="\n\n",
+    )
     while True:
         command = _get_input(COMMAND)
 
         if command == "yes":
-            print("Great, now let's go code some more ;)")
-            return
+            print(HUB)
+            return True
         elif command == "no":
             print("How about now.")
+        elif command == "menu":
+            return False
         else:
             print(INVALID_INPUT)
 
 
 def menu():
-    print("[Play]", "[Exit]", sep="\n", end="\n\n")
-
     while True:
-        command = _get_input(COMMAND)
+        print(TITLE)
+        print("[Play]", "[High] Scores", "[Help]", "[Exit]", sep="\n", end="\n\n")
 
-        if command == "play":
-            return play()
-        elif command == "exit":
-            print("Thanks for playing, bye!")
-            return
-        else:
-            print(INVALID_INPUT)
+        while True:
+            command = _get_input(COMMAND)
+
+            if command == "play":
+                exit_game = play()
+                if exit_game:
+                    return
+                else:
+                    break
+            elif command == "high":
+                print("No scores to display.", "    [Back]", end="\n\n")
+
+                command = _get_input(COMMAND)
+
+                while command != "back":
+                    print(INVALID_INPUT)
+                    command = _get_input(COMMAND)
+
+                break
+
+            elif command == "help":
+                print("Coming SOON! Thanks for playing!", end="\n\n")
+                return
+            elif command == "exit":
+                print("Thanks for playing, bye!")
+                return
+            else:
+                print(INVALID_INPUT)
 
 
 def main():
-    print(TITLE)
     menu()
 
 
