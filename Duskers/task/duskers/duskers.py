@@ -15,14 +15,16 @@ NAME = "Enter your name:\n"
 INVALID_INPUT = "Invalid input\n"
 
 
-def _get_input(prompt):
-    command = input(prompt).lower()
+def _get_input(prompt, lowercase=True):
+    command = input(prompt)
+    if lowercase:
+        command = command.lower()
     print()
     return command
 
 
 def play():
-    name = _get_input(NAME)
+    name = _get_input(NAME, False)
 
     print(f"Greetings, commander {name}!")
     print("Are you ready to begin?", "    [Yes] [No]", sep="\n", end="\n\n")
