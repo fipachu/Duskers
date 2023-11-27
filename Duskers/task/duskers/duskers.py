@@ -12,21 +12,33 @@ TITLE = """\
 HUB = """\
 __________(LOG)__________________________________________________(LOG)__________
 +==============================================================================+
-
-
-                                 (ROBOT IMAGES)
-
-
+         $()$()$      |      $()$()$     |      $()$()$
+        $$.....$$     |     $$.....$$    |     $$.....$$
+         $$$$$$$      |      $$$$$$$     |      $$$$$$$
+        $$$...$$$     |     $$$...$$$    |     $$$...$$$
+        $~$$$$$~$     |     $~$$$$$~$    |     $~$$$$$~$
 +==============================================================================+
 |                  [Ex]plore                          [Up]grade                |
 |                  [Save]                             [M]enu                   |
 +==============================================================================+\
 """
 
+MENU = """\
+                          |==========================|
+                          |            MENU          |
+                          |                          |
+                          | [Back] to game           |
+                          | Return to [Main] Menu    |
+                          | [Save] and exit          |
+                          | [Exit] game              |
+                          |==========================|\
+"""
+
 COMMAND = "Your command:\n"
 NAME = "Enter your name:\n"
 
 INVALID_INPUT = "Invalid input\n"
+COMING_SOON = "Coming SOON! Thanks for playing!"
 
 
 def _get_input(prompt, lowercase=True):
@@ -43,7 +55,7 @@ def play():
     print(f"Greetings, commander {name}!")
     print(
         "Are you ready to begin?",
-        "    [Yes] [No] Return to Main[Menu]",
+        "    [Yes] [No] Return to Main [Menu]",
         sep="\n",
         end="\n\n",
     )
@@ -51,8 +63,35 @@ def play():
         command = _get_input(COMMAND)
 
         if command == "yes":
-            print(HUB)
-            return True
+            while True:
+                print(HUB, end="\n\n")
+                command = _get_input(COMMAND)
+
+                if command == "ex":
+                    print(COMING_SOON, end="\n\n")
+                    return True
+                elif command == "save":
+                    print(COMING_SOON, end="\n\n")
+                    return True
+                elif command == "up":
+                    print(COMING_SOON, end="\n\n")
+                    return True
+                elif command == "m":
+                    print(MENU, sep="\n\n")
+
+                    command = _get_input(COMMAND)
+
+                    if command == "back":
+                        pass
+                    elif command == "main":
+                        return False
+                    elif command == "save":
+                        print(COMING_SOON, end="\n\n")
+                        return True
+                    elif command == "exit":
+                        print(COMING_SOON, end="\n\n")
+                        return True
+
         elif command == "no":
             print("How about now.")
         elif command == "menu":
@@ -61,7 +100,7 @@ def play():
             print(INVALID_INPUT)
 
 
-def menu():
+def main_menu():
     while True:
         print(TITLE)
         print("[Play]", "[High] Scores", "[Help]", "[Exit]", sep="\n", end="\n\n")
@@ -87,7 +126,7 @@ def menu():
                 break
 
             elif command == "help":
-                print("Coming SOON! Thanks for playing!", end="\n\n")
+                print(COMING_SOON, end="\n\n")
                 return
             elif command == "exit":
                 print("Thanks for playing, bye!")
@@ -97,7 +136,7 @@ def menu():
 
 
 def main():
-    menu()
+    main_menu()
 
 
 if __name__ == "__main__":
