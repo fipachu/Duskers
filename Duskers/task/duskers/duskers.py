@@ -55,13 +55,13 @@ def play():
             return True
         elif command == "no":
             print("How about now.")
-        elif command == "menu":
+        elif command == "main_menu":
             return False
         else:
             print(INVALID_INPUT)
 
 
-def menu():
+def main_menu():
     while True:
         print(TITLE)
         print("[Play]", "[High] Scores", "[Help]", "[Exit]", sep="\n", end="\n\n")
@@ -97,7 +97,7 @@ def menu():
 
 
 def main():
-    menu()
+    main_menu()
 
 
 if __name__ == "__main__":
