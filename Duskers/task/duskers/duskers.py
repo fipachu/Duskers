@@ -38,6 +38,7 @@ COMMAND = "Your command:\n"
 NAME = "Enter your name:\n"
 
 INVALID_INPUT = "Invalid input\n"
+COMING_SOON = "Coming SOON! Thanks for playing!"
 
 
 def _get_input(prompt, lowercase=True):
@@ -54,7 +55,7 @@ def play():
     print(f"Greetings, commander {name}!")
     print(
         "Are you ready to begin?",
-        "    [Yes] [No] Return to Main[Menu]",
+        "    [Yes] [No] Return to Main [Menu]",
         sep="\n",
         end="\n\n",
     )
@@ -62,16 +63,38 @@ def play():
         command = _get_input(COMMAND)
 
         if command == "yes":
-            print(HUB, end="\n\n")
-            command = _get_input(COMMAND)
+            while True:
+                print(HUB, end="\n\n")
+                command = _get_input(COMMAND)
 
-            if command == "m":
-                print(MENU, sep="\n\n")
+                if command == "ex":
+                    print(COMING_SOON, end="\n\n")
+                    return True
+                elif command == "save":
+                    print(COMING_SOON, end="\n\n")
+                    return True
+                elif command == "up":
+                    print(COMING_SOON, end="\n\n")
+                    return True
+                elif command == "m":
+                    print(MENU, sep="\n\n")
 
-            return True
+                    command = _get_input(COMMAND)
+
+                    if command == "back":
+                        pass
+                    elif command == "main":
+                        return False
+                    elif command == "save":
+                        print(COMING_SOON, end="\n\n")
+                        return True
+                    elif command == "exit":
+                        print(COMING_SOON, end="\n\n")
+                        return True
+
         elif command == "no":
             print("How about now.")
-        elif command == "main_menu":
+        elif command == "menu":
             return False
         else:
             print(INVALID_INPUT)
@@ -103,7 +126,7 @@ def main_menu():
                 break
 
             elif command == "help":
-                print("Coming SOON! Thanks for playing!", end="\n\n")
+                print(COMING_SOON, end="\n\n")
                 return
             elif command == "exit":
                 print("Thanks for playing, bye!")
