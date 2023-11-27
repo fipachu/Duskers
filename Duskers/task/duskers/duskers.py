@@ -23,6 +23,17 @@ __________(LOG)__________________________________________________(LOG)__________
 +==============================================================================+\
 """
 
+MENU = """\
+                          |==========================|
+                          |            MENU          |
+                          |                          |
+                          | [Back] to game           |
+                          | Return to [Main] Menu    |
+                          | [Save] and exit          |
+                          | [Exit] game              |
+                          |==========================|\
+"""
+
 COMMAND = "Your command:\n"
 NAME = "Enter your name:\n"
 
@@ -51,7 +62,12 @@ def play():
         command = _get_input(COMMAND)
 
         if command == "yes":
-            print(HUB)
+            print(HUB, end="\n\n")
+            command = _get_input(COMMAND)
+
+            if command == "m":
+                print(MENU, sep="\n\n")
+
             return True
         elif command == "no":
             print("How about now.")
