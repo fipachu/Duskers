@@ -54,6 +54,48 @@ class GameState(StrEnum):
     help = auto()
 
 
+class Game:
+    def __init__(self):
+        self.state = GameState.initializing
+
+    def set_state(self, new_state):
+        self.state = new_state
+
+    def start_game(self):
+        self.state = GameState.main_menu
+        self.loop()
+
+    def quit(self):
+        print("Thanks for playing, bye!")
+
+    def loop(self):
+        while self.state != GameState.quitting:
+            if self.state == GameState.main_menu:
+                self.main_menu()
+        self.quit()
+
+    def main_menu(self):
+        print(TITLE)
+        print("[Play]", "[High] Scores", "[Help]", "[Exit]", sep="\n", end="\n\n")
+
+        while True:
+            command = _get_input(COMMAND)
+
+            if command == "play":
+                self.state = GameState.play
+            elif command == "high":
+                self.state = GameState.high_scores
+            elif command == "help":
+                self.state = GameState.help
+            elif command == "exit":
+                self.state = GameState.quitting
+            else:
+                print(INVALID_INPUT)
+                continue
+
+            break
+
+
 def _get_input(prompt, lowercase=True):
     command = input(prompt)
     if lowercase:
@@ -149,7 +191,7 @@ def main_menu():
 
 
 def main():
-    main_menu()
+    Game().start_game()
 
 
 if __name__ == "__main__":
