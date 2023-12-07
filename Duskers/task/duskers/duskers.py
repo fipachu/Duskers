@@ -70,7 +70,7 @@ class Game:
             if self.state == GameState.main_menu:
                 self.main_menu()
             elif self.state == GameState.play:
-                raise NotImplementedError()
+                self.play()
             elif self.state == GameState.high_scores:
                 self.high_scores()
             elif self.state == GameState.help:
@@ -100,6 +100,63 @@ class Game:
                 continue
 
             break
+
+    def play(self):
+        name = _get_input(NAME, False)
+
+        print(f"Greetings, commander {name}!")
+        print(
+            "Are you ready to begin?",
+            "    [Yes] [No] Return to Main [Menu]",
+            sep="\n",
+            end="\n\n",
+        )
+        while True:
+            command = _get_input(COMMAND)
+
+            if command == "yes":
+                while True:
+                    print(HUB, end="\n\n")
+                    command = _get_input(COMMAND)
+
+                    if command == "ex":
+                        print(COMING_SOON, end="\n\n")
+                        self.state = GameState.quitting
+                        return
+                    elif command == "save":
+                        print(COMING_SOON, end="\n\n")
+                        self.state = GameState.quitting
+                        return
+                    elif command == "up":
+                        print(COMING_SOON, end="\n\n")
+                        self.state = GameState.quitting
+                        return
+                    elif command == "m":
+                        print(MENU, sep="\n\n")
+
+                        command = _get_input(COMMAND)
+
+                        if command == "back":
+                            pass
+                        elif command == "main":
+                            self.state = GameState.main_menu
+                            return
+                        elif command == "save":
+                            print(COMING_SOON, end="\n\n")
+                            self.state = GameState.quitting
+                            return
+                        elif command == "exit":
+                            print(COMING_SOON, end="\n\n")
+                            self.state = GameState.quitting
+                            return
+
+            elif command == "no":
+                print("How about now.")
+            elif command == "menu":
+                self.state = GameState.main_menu
+                return
+            else:
+                print(INVALID_INPUT)
 
     def high_scores(self):
         print("No scores to display.", "    [Back]", end="\n\n")
