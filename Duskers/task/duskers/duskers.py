@@ -1,3 +1,5 @@
+from enum import StrEnum, auto
+
 TITLE = """\
 +===========================================================================================+
   ######*   ##*  ##*  ######*   ##*   ##*  #######*  ##*  ##*  #######*  ######*   #######*
@@ -39,6 +41,17 @@ NAME = "Enter your name:\n"
 
 INVALID_INPUT = "Invalid input\n"
 COMING_SOON = "Coming SOON! Thanks for playing!"
+
+
+class GameState(StrEnum):
+    initializing = auto()
+    quitting = auto()
+
+    title_screen = auto()
+    main_menu = auto()
+    play = auto()
+    high_scores = auto()
+    help = auto()
 
 
 def _get_input(prompt, lowercase=True):
