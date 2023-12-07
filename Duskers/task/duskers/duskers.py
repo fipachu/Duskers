@@ -65,14 +65,21 @@ class Game:
         self.state = GameState.main_menu
         self.loop()
 
-    def quit(self):
-        print("Thanks for playing, bye!")
-
     def loop(self):
         while self.state != GameState.quitting:
             if self.state == GameState.main_menu:
                 self.main_menu()
+            elif self.state == GameState.play:
+                raise NotImplementedError()
+            elif self.state == GameState.high_scores:
+                raise NotImplementedError()
+            elif self.state == GameState.help:
+                self.help()
         self.quit()
+
+    def quit(self):
+        print("Thanks for playing, bye!")
+
 
     def main_menu(self):
         print(TITLE)
@@ -94,6 +101,10 @@ class Game:
                 continue
 
             break
+
+    def help(self):
+        print(COMING_SOON, end="\n\n")
+        self.state = GameState.quitting
 
 
 def _get_input(prompt, lowercase=True):
