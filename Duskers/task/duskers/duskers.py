@@ -72,14 +72,13 @@ class Game:
             elif self.state == GameState.play:
                 raise NotImplementedError()
             elif self.state == GameState.high_scores:
-                raise NotImplementedError()
+                self.high_scores()
             elif self.state == GameState.help:
                 self.help()
         self.quit()
 
     def quit(self):
         print("Thanks for playing, bye!")
-
 
     def main_menu(self):
         print(TITLE)
@@ -101,6 +100,19 @@ class Game:
                 continue
 
             break
+
+    def high_scores(self):
+        print("No scores to display.", "    [Back]", end="\n\n")
+
+        command = _get_input(COMMAND)
+
+        while True:
+            if command == "back":
+                self.state = GameState.main_menu
+                break
+            else:
+                print(INVALID_INPUT)
+                command = _get_input(COMMAND)
 
     def help(self):
         print(COMING_SOON, end="\n\n")
