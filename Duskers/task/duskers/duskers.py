@@ -135,12 +135,12 @@ class Game:
 
             if command == "yes":
                 self.state = GameState.play
-                return
-            elif command == "no":
-                print("How about now.")
+                break
             elif command == "menu":
                 self.state = GameState.main_menu
-                return
+                break
+            elif command == "no":
+                print("How about now.")
             else:
                 print(INVALID_INPUT, end="\n\n")
 
@@ -151,16 +151,16 @@ class Game:
 
             if command == "ex":
                 self.state = GameState.explore
-                return
+                break
             elif command == "save":
                 self.state = GameState.save
-                return
+                break
             elif command == "up":
                 self.state = GameState.upgrade
-                return
+                break
             elif command == "m":
                 self.state = GameState._submenu
-                return
+                break
 
     def explore(self):
         print(COMING_SOON, end="\n\n")
@@ -182,18 +182,18 @@ class Game:
 
             if command == "back":
                 self.state = GameState.play
-                return
+                break
             elif command == "main":
                 self.state = GameState.main_menu
-                return
+                break
             elif command == "save":
                 print(COMING_SOON, end="\n\n")
                 self.state = GameState.quitting
-                return
+                break
             elif command == "exit":
                 print(COMING_SOON, end="\n\n")
                 self.state = GameState.quitting
-                return
+                break
             else:
                 print(INVALID_INPUT, end="\n\n")
 
