@@ -1,3 +1,5 @@
+import random
+from argparse import ArgumentParser
 from enum import StrEnum, auto
 
 from constants import *
@@ -21,7 +23,10 @@ class GameState(StrEnum):
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, config):
+        self.config = config
+        self.locations = config.locations.replace("_", " ").split(",")
+
         self.state = GameState.initializing
 
     @staticmethod
@@ -117,7 +122,6 @@ class Game:
         print(HUB, end="\n\n")
 
         while True:
-            print(HUB, end="\n\n")
             command = self._get_input(COMMAND)
 
             if command == "ex":
@@ -136,8 +140,29 @@ class Game:
                 print(INVALID_INPUT, end="\n\n")
 
     def explore(self):
-        print(COMING_SOON, end="\n\n")
-        self.state = GameState.quitting
+        number_of_locations = random.randint(1, 9)
+
+        locations = {}
+        for i in range(1, number_of_locations + 1):
+            locations[i] = random.choice(self.locations)
+
+            print("Searching")
+            for location_id, location in locations.items():
+                print(f"[{location_id}] {location}")
+            print()
+
+            print("[S] to continue searching", end="\n\n")
+
+            while True:
+                command = self._get_input(COMMAND)
+                if command == "s":
+                    break
+                else:
+                    print(INVALID_INPUT, end="\n\n")
+
+        # print("Nothing more in sight.\n"
+        #       "       [Back]")
+        self.state = GameState.play
 
     def save(self):
         print(COMING_SOON, end="\n\n")
@@ -188,8 +213,22 @@ class Game:
         self.state = GameState.quitting
 
 
+def get_config():
+    parser = ArgumentParser()
+    parser.add_argument("seed", nargs="?", type=str, default="0")
+    parser.add_argument("min_animation_duration", nargs="?", type=int, default=0)
+    parser.add_argument("max_animation_duration", nargs="?", type=int, default=0)
+    parser.add_argument("locations", nargs="?", default=LOCATIONS)
+
+    args = parser.parse_args()
+    return args
+
+
 def main():
-    Game().start_game()
+    config = get_config()
+    random.seed(config.seed)
+
+    Game(config).start_game()
 
 
 if __name__ == "__main__":
