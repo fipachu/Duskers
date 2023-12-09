@@ -14,7 +14,7 @@ class GameState(StrEnum):
     explore = auto()
     save = auto()
     upgrade = auto()
-    _submenu = auto()
+    game_menu = auto()
 
     high_scores = auto()
     help = auto()
@@ -44,7 +44,7 @@ class Game:
                 self.save()
             elif self.state == GameState.upgrade:
                 self.upgrade()
-            elif self.state == GameState._submenu:
+            elif self.state == GameState.game_menu:
                 self._submenu()
             elif self.state == GameState.play:
                 self.play()
@@ -119,7 +119,7 @@ class Game:
                 self.state = GameState.upgrade
                 break
             elif command == "m":
-                self.state = GameState._submenu
+                self.state = GameState.game_menu
                 break
 
     def explore(self):
