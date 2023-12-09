@@ -114,6 +114,8 @@ class Game:
                 print(INVALID_INPUT, end="\n\n")
 
     def play(self):
+        print(HUB, end="\n\n")
+
         while True:
             print(HUB, end="\n\n")
             command = self._get_input(COMMAND)
@@ -130,6 +132,8 @@ class Game:
             elif command == "m":
                 self.state = GameState.game_menu
                 break
+            else:
+                print(INVALID_INPUT, end="\n\n")
 
     def explore(self):
         print(COMING_SOON, end="\n\n")
