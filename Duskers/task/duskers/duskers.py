@@ -49,8 +49,8 @@ class GameState(StrEnum):
 
     main_menu = auto()
 
+    pre_play = auto()
     play = auto()
-    _post_play = auto()
     explore = auto()
     save = auto()
     upgrade = auto()
@@ -76,8 +76,8 @@ class Game:
             if self.state == GameState.main_menu:
                 self.main_menu()
 
-            elif self.state == GameState.play:
-                self.play()
+            elif self.state == GameState.pre_play:
+                self.pre_play()
             elif self.state == GameState.explore:
                 self.explore()
             elif self.state == GameState.save:
@@ -86,8 +86,8 @@ class Game:
                 self.upgrade()
             elif self.state == GameState._submenu:
                 self._submenu()
-            elif self.state == GameState._post_play:
-                self._post_play()
+            elif self.state == GameState.play:
+                self.play()
 
             elif self.state == GameState.high_scores:
                 self.high_scores()
@@ -106,7 +106,7 @@ class Game:
             command = _get_input(COMMAND)
 
             if command == "play":
-                self.state = GameState.play
+                self.state = GameState.pre_play
             elif command == "high":
                 self.state = GameState.high_scores
             elif command == "help":
@@ -119,7 +119,7 @@ class Game:
 
             break
 
-    def play(self):
+    def pre_play(self):
         name = _get_input(NAME, False)
 
         print(f"Greetings, commander {name}!")
@@ -134,7 +134,7 @@ class Game:
             command = _get_input(COMMAND)
 
             if command == "yes":
-                self.state = GameState._post_play
+                self.state = GameState.play
                 return
             elif command == "no":
                 print("How about now.")
@@ -144,7 +144,7 @@ class Game:
             else:
                 print(INVALID_INPUT, end="\n\n")
 
-    def _post_play(self):
+    def play(self):
         while True:
             print(HUB, end="\n\n")
             command = _get_input(COMMAND)
@@ -181,7 +181,7 @@ class Game:
             command = _get_input(COMMAND)
 
             if command == "back":
-                self.state = GameState._post_play
+                self.state = GameState.play
                 return
             elif command == "main":
                 self.state = GameState.main_menu
