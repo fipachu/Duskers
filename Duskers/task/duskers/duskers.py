@@ -129,6 +129,7 @@ class Game:
             sep="\n",
             end="\n\n",
         )
+
         while True:
             command = _get_input(COMMAND)
 
