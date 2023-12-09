@@ -1,142 +1,191 @@
-TITLE = """\
-+===========================================================================================+
-  ######*   ##*  ##*  ######*   ##*   ##*  #######*  ##*  ##*  #######*  ######*   #######*
-  ##*  ##*  ##*  ##*  ##*  ##*  ##*   ##*  ##*       ##* ##*   ##*       ##*  ##*  ##*
-  ######*    #####*   ##*  ##*  ##*   ##*  #######*  #####*    #####*    ######*   #######*
-  ##*         ##*     ##*  ##*  ##*   ##*       ##*  ##* ##*   ##*       ##*  ##*       ##*
-  ##*         ##*     ######*    ######*   #######*  ##*  ##*  #######*  ##*  ##*  #######*
-                                (Survival ASCII Strategy Game)
-+===========================================================================================+\
-"""
+from enum import StrEnum, auto
 
-HUB = """\
-__________(LOG)__________________________________________________(LOG)__________
-+==============================================================================+
-         $()$()$      |      $()$()$     |      $()$()$
-        $$.....$$     |     $$.....$$    |     $$.....$$
-         $$$$$$$      |      $$$$$$$     |      $$$$$$$
-        $$$...$$$     |     $$$...$$$    |     $$$...$$$
-        $~$$$$$~$     |     $~$$$$$~$    |     $~$$$$$~$
-+==============================================================================+
-|                  [Ex]plore                          [Up]grade                |
-|                  [Save]                             [M]enu                   |
-+==============================================================================+\
-"""
-
-MENU = """\
-                          |==========================|
-                          |            MENU          |
-                          |                          |
-                          | [Back] to game           |
-                          | Return to [Main] Menu    |
-                          | [Save] and exit          |
-                          | [Exit] game              |
-                          |==========================|\
-"""
-
-COMMAND = "Your command:\n"
-NAME = "Enter your name:\n"
-
-INVALID_INPUT = "Invalid input\n"
-COMING_SOON = "Coming SOON! Thanks for playing!"
+from constants import *
 
 
-def _get_input(prompt, lowercase=True):
-    command = input(prompt)
-    if lowercase:
-        command = command.lower()
-    print()
-    return command
+class GameState(StrEnum):
+    initializing = auto()
+    quitting = auto()
+
+    main_menu = auto()
+
+    pre_play = auto()
+    play = auto()
+    explore = auto()
+    save = auto()
+    upgrade = auto()
+    game_menu = auto()
+
+    high_scores = auto()
+    help = auto()
 
 
-def play():
-    name = _get_input(NAME, False)
+class Game:
+    def __init__(self):
+        self.state = GameState.initializing
 
-    print(f"Greetings, commander {name}!")
-    print(
-        "Are you ready to begin?",
-        "    [Yes] [No] Return to Main [Menu]",
-        sep="\n",
-        end="\n\n",
-    )
-    while True:
-        command = _get_input(COMMAND)
+    @staticmethod
+    def _get_input(prompt, lowercase=True):
+        command = input(prompt)
+        if lowercase:
+            command = command.lower()
+        print()
+        return command
 
-        if command == "yes":
-            while True:
-                print(HUB, end="\n\n")
-                command = _get_input(COMMAND)
+    def set_state(self, new_state):
+        self.state = new_state
 
-                if command == "ex":
-                    print(COMING_SOON, end="\n\n")
-                    return True
-                elif command == "save":
-                    print(COMING_SOON, end="\n\n")
-                    return True
-                elif command == "up":
-                    print(COMING_SOON, end="\n\n")
-                    return True
-                elif command == "m":
-                    print(MENU, sep="\n\n")
+    def start_game(self):
+        self.state = GameState.main_menu
+        self.loop()
 
-                    command = _get_input(COMMAND)
+    def loop(self):
+        while self.state != GameState.quitting:
+            if self.state == GameState.main_menu:
+                self.main_menu()
 
-                    if command == "back":
-                        pass
-                    elif command == "main":
-                        return False
-                    elif command == "save":
-                        print(COMING_SOON, end="\n\n")
-                        return True
-                    elif command == "exit":
-                        print(COMING_SOON, end="\n\n")
-                        return True
+            elif self.state == GameState.pre_play:
+                self.pre_play()
+            elif self.state == GameState.explore:
+                self.explore()
+            elif self.state == GameState.save:
+                self.save()
+            elif self.state == GameState.upgrade:
+                self.upgrade()
+            elif self.state == GameState.game_menu:
+                self._submenu()
+            elif self.state == GameState.play:
+                self.play()
 
-        elif command == "no":
-            print("How about now.")
-        elif command == "menu":
-            return False
-        else:
-            print(INVALID_INPUT)
+            elif self.state == GameState.high_scores:
+                self.high_scores()
+            elif self.state == GameState.help:
+                self.help()
+        self.quit()
 
+    @staticmethod
+    def quit():
+        print("Thanks for playing, bye!")
 
-def main_menu():
-    while True:
+    def main_menu(self):
         print(TITLE)
         print("[Play]", "[High] Scores", "[Help]", "[Exit]", sep="\n", end="\n\n")
 
         while True:
-            command = _get_input(COMMAND)
+            command = self._get_input(COMMAND)
 
             if command == "play":
-                exit_game = play()
-                if exit_game:
-                    return
-                else:
-                    break
+                self.state = GameState.pre_play
             elif command == "high":
-                print("No scores to display.", "    [Back]", end="\n\n")
+                self.state = GameState.high_scores
+            elif command == "help":
+                self.state = GameState.help
+            elif command == "exit":
+                self.state = GameState.quitting
+            else:
+                print(INVALID_INPUT, end="\n\n")
+                continue
 
-                command = _get_input(COMMAND)
+            break
 
-                while command != "back":
-                    print(INVALID_INPUT)
-                    command = _get_input(COMMAND)
+    def pre_play(self):
+        name = self._get_input(NAME, False)
 
+        print(f"Greetings, commander {name}!")
+        print(
+            "Are you ready to begin?",
+            "    [Yes] [No] Return to Main [Menu]",
+            sep="\n",
+            end="\n\n",
+        )
+
+        while True:
+            command = self._get_input(COMMAND)
+
+            if command == "yes":
+                self.state = GameState.play
+                break
+            elif command == "menu":
+                self.state = GameState.main_menu
+                break
+            elif command == "no":
+                print("How about now.")
+            else:
+                print(INVALID_INPUT, end="\n\n")
+
+    def play(self):
+        while True:
+            print(HUB, end="\n\n")
+            command = self._get_input(COMMAND)
+
+            if command == "ex":
+                self.state = GameState.explore
+                break
+            elif command == "save":
+                self.state = GameState.save
+                break
+            elif command == "up":
+                self.state = GameState.upgrade
+                break
+            elif command == "m":
+                self.state = GameState.game_menu
                 break
 
-            elif command == "help":
+    def explore(self):
+        print(COMING_SOON, end="\n\n")
+        self.state = GameState.quitting
+
+    def save(self):
+        print(COMING_SOON, end="\n\n")
+        self.state = GameState.quitting
+
+    def upgrade(self):
+        print(COMING_SOON, end="\n\n")
+        self.state = GameState.quitting
+
+    def _submenu(self):
+        print(MENU, end="\n\n")
+
+        while True:
+            command = self._get_input(COMMAND)
+
+            if command == "back":
+                self.state = GameState.play
+                break
+            elif command == "main":
+                self.state = GameState.main_menu
+                break
+            elif command == "save":
                 print(COMING_SOON, end="\n\n")
-                return
+                self.state = GameState.quitting
+                break
             elif command == "exit":
-                print("Thanks for playing, bye!")
-                return
+                print(COMING_SOON, end="\n\n")
+                self.state = GameState.quitting
+                break
             else:
-                print(INVALID_INPUT)
+                print(INVALID_INPUT, end="\n\n")
+
+    def high_scores(self):
+        print("No scores to display.", "    [Back]", end="\n\n")
+
+        command = self._get_input(COMMAND)
+
+        while True:
+            if command == "back":
+                self.state = GameState.main_menu
+                break
+            else:
+                print(INVALID_INPUT, end="\n\n")
+                command = self._get_input(COMMAND)
+
+    def help(self):
+        print(COMING_SOON, end="\n\n")
+        self.state = GameState.quitting
 
 
 def main():
-    main_menu()
+    Game().start_game()
 
 
 if __name__ == "__main__":
