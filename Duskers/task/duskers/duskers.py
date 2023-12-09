@@ -55,7 +55,8 @@ class Game:
                 self.help()
         self.quit()
 
-    def quit(self):
+    @staticmethod
+    def quit():
         print("Thanks for playing, bye!")
 
     def main_menu(self):
