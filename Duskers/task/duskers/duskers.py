@@ -39,7 +39,7 @@ MENU = """\
 COMMAND = "Your command:\n"
 NAME = "Enter your name:\n"
 
-INVALID_INPUT = "Invalid input\n"
+INVALID_INPUT = "Invalid input"
 COMING_SOON = "Coming SOON! Thanks for playing!"
 
 
@@ -95,7 +95,7 @@ class Game:
             elif command == "exit":
                 self.state = GameState.quitting
             else:
-                print(INVALID_INPUT)
+                print(INVALID_INPUT, end="\n\n")
                 continue
 
             break
@@ -155,7 +155,7 @@ class Game:
                 self.state = GameState.main_menu
                 return
             else:
-                print(INVALID_INPUT)
+                print(INVALID_INPUT, end="\n\n")
 
     def high_scores(self):
         print("No scores to display.", "    [Back]", end="\n\n")
@@ -167,7 +167,7 @@ class Game:
                 self.state = GameState.main_menu
                 break
             else:
-                print(INVALID_INPUT)
+                print(INVALID_INPUT, end="\n\n")
                 command = _get_input(COMMAND)
 
     def help(self):
