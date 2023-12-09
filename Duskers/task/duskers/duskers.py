@@ -48,7 +48,13 @@ class GameState(StrEnum):
     quitting = auto()
 
     main_menu = auto()
+
     play = auto()
+    explore = auto()
+    save = auto()
+    upgrade = auto()
+    _submenu = auto()
+
     high_scores = auto()
     help = auto()
 
@@ -68,8 +74,11 @@ class Game:
         while self.state != GameState.quitting:
             if self.state == GameState.main_menu:
                 self.main_menu()
+
             elif self.state == GameState.play:
                 self.play()
+            elif self.state == GameState.explore:
+                self.explore()
             elif self.state == GameState.high_scores:
                 self.high_scores()
             elif self.state == GameState.help:
@@ -119,8 +128,7 @@ class Game:
                     command = _get_input(COMMAND)
 
                     if command == "ex":
-                        print(COMING_SOON, end="\n\n")
-                        self.state = GameState.quitting
+                        self.state = GameState.explore
                         return
                     elif command == "save":
                         print(COMING_SOON, end="\n\n")
@@ -156,6 +164,11 @@ class Game:
                 return
             else:
                 print(INVALID_INPUT, end="\n\n")
+
+    def explore(self):
+        print(COMING_SOON, end="\n\n")
+        self.state = GameState.quitting
+
 
     def high_scores(self):
         print("No scores to display.", "    [Back]", end="\n\n")
