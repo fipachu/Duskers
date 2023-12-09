@@ -26,6 +26,8 @@ class Game:
     def __init__(self, config):
         self.config = config
         self.locations = config.locations.replace("_", " ").split(",")
+        # Discard any "" locations
+        self.locations = [location for location in self.locations if location]
 
         self.state = GameState.initializing
 
