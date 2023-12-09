@@ -175,7 +175,7 @@ class Game:
         self.state = GameState.quitting
 
     def _submenu(self):
-        print(MENU, sep="\n\n")
+        print(MENU, end="\n\n")
 
         while True:
             command = _get_input(COMMAND)
