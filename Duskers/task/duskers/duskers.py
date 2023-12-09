@@ -162,7 +162,7 @@ class Game:
                 self.state = GameState._submenu
                 return
 
-    def upgrade(self):
+    def explore(self):
         print(COMING_SOON, end="\n\n")
         self.state = GameState.quitting
 
@@ -170,7 +170,7 @@ class Game:
         print(COMING_SOON, end="\n\n")
         self.state = GameState.quitting
 
-    def explore(self):
+    def upgrade(self):
         print(COMING_SOON, end="\n\n")
         self.state = GameState.quitting
 
