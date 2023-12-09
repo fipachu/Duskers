@@ -50,6 +50,7 @@ class GameState(StrEnum):
     main_menu = auto()
 
     play = auto()
+    _post_play = auto()
     explore = auto()
     save = auto()
     upgrade = auto()
@@ -83,6 +84,11 @@ class Game:
                 self.save()
             elif self.state == GameState.upgrade:
                 self.upgrade()
+            elif self.state == GameState._submenu:
+                self._submenu()
+            elif self.state == GameState._post_play:
+                self._post_play()
+
             elif self.state == GameState.high_scores:
                 self.high_scores()
             elif self.state == GameState.help:
@@ -127,38 +133,8 @@ class Game:
             command = _get_input(COMMAND)
 
             if command == "yes":
-                while True:
-                    print(HUB, end="\n\n")
-                    command = _get_input(COMMAND)
-
-                    if command == "ex":
-                        self.state = GameState.explore
-                        return
-                    elif command == "save":
-                        self.state = GameState.save
-                        return
-                    elif command == "up":
-                        self.state = GameState.upgrade
-                        return
-                    elif command == "m":
-                        print(MENU, sep="\n\n")
-
-                        command = _get_input(COMMAND)
-
-                        if command == "back":
-                            pass
-                        elif command == "main":
-                            self.state = GameState.main_menu
-                            return
-                        elif command == "save":
-                            print(COMING_SOON, end="\n\n")
-                            self.state = GameState.quitting
-                            return
-                        elif command == "exit":
-                            print(COMING_SOON, end="\n\n")
-                            self.state = GameState.quitting
-                            return
-
+                self.state = GameState._post_play
+                return
             elif command == "no":
                 print("How about now.")
             elif command == "menu":
@@ -166,6 +142,24 @@ class Game:
                 return
             else:
                 print(INVALID_INPUT, end="\n\n")
+
+    def _post_play(self):
+        while True:
+            print(HUB, end="\n\n")
+            command = _get_input(COMMAND)
+
+            if command == "ex":
+                self.state = GameState.explore
+                return
+            elif command == "save":
+                self.state = GameState.save
+                return
+            elif command == "up":
+                self.state = GameState.upgrade
+                return
+            elif command == "m":
+                self.state = GameState._submenu
+                return
 
     def upgrade(self):
         print(COMING_SOON, end="\n\n")
@@ -179,6 +173,26 @@ class Game:
         print(COMING_SOON, end="\n\n")
         self.state = GameState.quitting
 
+    def _submenu(self):
+        print(MENU, sep="\n\n")
+
+        command = _get_input(COMMAND)
+
+        if command == "back":
+            self.state = GameState._post_play
+            return
+        elif command == "main":
+            self.state = GameState.main_menu
+            return
+        elif command == "save":
+            print(COMING_SOON, end="\n\n")
+            self.state = GameState.quitting
+            return
+        elif command == "exit":
+            print(COMING_SOON, end="\n\n")
+            self.state = GameState.quitting
+            return
+        # Shouldn't there be a print(INVALID_INPUT) here?
 
     def high_scores(self):
         print("No scores to display.", "    [Back]", end="\n\n")
