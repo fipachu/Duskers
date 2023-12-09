@@ -177,23 +177,25 @@ class Game:
     def _submenu(self):
         print(MENU, sep="\n\n")
 
-        command = _get_input(COMMAND)
+        while True:
+            command = _get_input(COMMAND)
 
-        if command == "back":
-            self.state = GameState._post_play
-            return
-        elif command == "main":
-            self.state = GameState.main_menu
-            return
-        elif command == "save":
-            print(COMING_SOON, end="\n\n")
-            self.state = GameState.quitting
-            return
-        elif command == "exit":
-            print(COMING_SOON, end="\n\n")
-            self.state = GameState.quitting
-            return
-        # Shouldn't there be a print(INVALID_INPUT) here?
+            if command == "back":
+                self.state = GameState._post_play
+                return
+            elif command == "main":
+                self.state = GameState.main_menu
+                return
+            elif command == "save":
+                print(COMING_SOON, end="\n\n")
+                self.state = GameState.quitting
+                return
+            elif command == "exit":
+                print(COMING_SOON, end="\n\n")
+                self.state = GameState.quitting
+                return
+            else:
+                print(INVALID_INPUT, end="\n\n")
 
     def high_scores(self):
         print("No scores to display.", "    [Back]", end="\n\n")
