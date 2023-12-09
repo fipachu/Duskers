@@ -81,6 +81,8 @@ class Game:
                 self.explore()
             elif self.state == GameState.save:
                 self.save()
+            elif self.state == GameState.upgrade:
+                self.upgrade()
             elif self.state == GameState.high_scores:
                 self.high_scores()
             elif self.state == GameState.help:
@@ -136,8 +138,7 @@ class Game:
                         self.state = GameState.save
                         return
                     elif command == "up":
-                        print(COMING_SOON, end="\n\n")
-                        self.state = GameState.quitting
+                        self.state = GameState.upgrade
                         return
                     elif command == "m":
                         print(MENU, sep="\n\n")
@@ -165,6 +166,10 @@ class Game:
                 return
             else:
                 print(INVALID_INPUT, end="\n\n")
+
+    def upgrade(self):
+        print(COMING_SOON, end="\n\n")
+        self.state = GameState.quitting
 
     def save(self):
         print(COMING_SOON, end="\n\n")
