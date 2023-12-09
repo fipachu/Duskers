@@ -24,6 +24,14 @@ class Game:
     def __init__(self):
         self.state = GameState.initializing
 
+    @staticmethod
+    def _get_input(prompt, lowercase=True):
+        command = input(prompt)
+        if lowercase:
+            command = command.lower()
+        print()
+        return command
+
     def set_state(self, new_state):
         self.state = new_state
 
@@ -64,7 +72,7 @@ class Game:
         print("[Play]", "[High] Scores", "[Help]", "[Exit]", sep="\n", end="\n\n")
 
         while True:
-            command = _get_input(COMMAND)
+            command = self._get_input(COMMAND)
 
             if command == "play":
                 self.state = GameState.pre_play
@@ -81,7 +89,7 @@ class Game:
             break
 
     def pre_play(self):
-        name = _get_input(NAME, False)
+        name = self._get_input(NAME, False)
 
         print(f"Greetings, commander {name}!")
         print(
@@ -92,7 +100,7 @@ class Game:
         )
 
         while True:
-            command = _get_input(COMMAND)
+            command = self._get_input(COMMAND)
 
             if command == "yes":
                 self.state = GameState.play
@@ -108,7 +116,7 @@ class Game:
     def play(self):
         while True:
             print(HUB, end="\n\n")
-            command = _get_input(COMMAND)
+            command = self._get_input(COMMAND)
 
             if command == "ex":
                 self.state = GameState.explore
@@ -139,7 +147,7 @@ class Game:
         print(MENU, end="\n\n")
 
         while True:
-            command = _get_input(COMMAND)
+            command = self._get_input(COMMAND)
 
             if command == "back":
                 self.state = GameState.play
@@ -161,7 +169,7 @@ class Game:
     def high_scores(self):
         print("No scores to display.", "    [Back]", end="\n\n")
 
-        command = _get_input(COMMAND)
+        command = self._get_input(COMMAND)
 
         while True:
             if command == "back":
@@ -169,19 +177,11 @@ class Game:
                 break
             else:
                 print(INVALID_INPUT, end="\n\n")
-                command = _get_input(COMMAND)
+                command = self._get_input(COMMAND)
 
     def help(self):
         print(COMING_SOON, end="\n\n")
         self.state = GameState.quitting
-
-
-def _get_input(prompt, lowercase=True):
-    command = input(prompt)
-    if lowercase:
-        command = command.lower()
-    print()
-    return command
 
 
 def main():
