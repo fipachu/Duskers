@@ -31,6 +31,8 @@ class Game:
 
         self.state = GameState.initializing
 
+        self.titanium = 0
+
     @staticmethod
     def _get_input(prompt, lowercase=True):
         command = input(prompt)
@@ -121,7 +123,7 @@ class Game:
                 print(INVALID_INPUT, end="\n\n")
 
     def play(self):
-        print(HUB, end="\n\n")
+        print(HUB.format(self.titanium), end="\n\n")
 
         while True:
             command = self._get_input(COMMAND)
