@@ -1,6 +1,6 @@
 # PyDuskers
 Strategic game inspired by "Duskers"
 
-Work in progress, no gameplay yet.
+It's very much a work in progress but you can play it [via Replit](https://replit.com/@fipachu/PyDuskers?v=1)!
 
 My code is [here](Duskers/task/duskers)
