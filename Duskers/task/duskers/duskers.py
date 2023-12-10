@@ -237,7 +237,6 @@ class Game:
                 self.state = GameState.quitting
                 break
             elif command == "exit":
-                print(COMING_SOON, end="\n\n")
                 self.state = GameState.quitting
                 break
             else:
