@@ -143,7 +143,7 @@ class Game:
             else:
                 print(INVALID_INPUT, end="\n\n")
 
-    # TODO: refactor this. It do be a mess.
+    # TODO: refactor this. It do be a mess. Remember to go to stage 4.
     def explore(self):
         number_of_locations = random.randint(1, 9)
         location_numbers = range(1, number_of_locations + 1)
@@ -160,7 +160,8 @@ class Game:
                 print(f"[{location_id}] {location_data['name']}")
             print()
 
-            print("[S] to continue searching", end="\n\n")
+            print("[S] to continue searching")
+            print("[Back] to cancel exploration", end="\n\n")
 
             while True:
                 command = self._get_input(COMMAND)
