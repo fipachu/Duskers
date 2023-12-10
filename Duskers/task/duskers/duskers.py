@@ -143,16 +143,21 @@ class Game:
             else:
                 print(INVALID_INPUT, end="\n\n")
 
+    # TODO: refactor this. It do be a mess.
     def explore(self):
         number_of_locations = random.randint(1, 9)
+        location_numbers = range(1, number_of_locations + 1)
 
         locations = {}
-        for i in range(1, number_of_locations + 1):
-            locations[i] = random.choice(self.locations)
+        for i in location_numbers:
+            locations[i] = {
+                "name": random.choice(self.locations),
+                "titanium": random.randint(10, 100),
+            }
 
             print("Searching")
-            for location_id, location in locations.items():
-                print(f"[{location_id}] {location}")
+            for location_id, location_data in locations.items():
+                print(f"[{location_id}] {location_data['name']}")
             print()
 
             print("[S] to continue searching", end="\n\n")
@@ -161,11 +166,49 @@ class Game:
                 command = self._get_input(COMMAND)
                 if command == "s":
                     break
+                elif command == "back":
+                    break
+                elif command.isdigit() and int(command) in locations:
+                    command = int(command)
+                    break
+                else:
+                    print(INVALID_INPUT, end="\n\n")
+            if command == "back":
+                break
+
+            if isinstance(command, int):
+                chosen_location = locations[command]["name"]
+                titanium_found = locations[command]["titanium"]
+                print(
+                    f"Deploying robots\n"
+                    f"{chosen_location} explored successfully, with no damage taken.\n"
+                    f"Acquired {titanium_found} lumps of titanium."
+                )
+                self.titanium += titanium_found
+                # Here I'd ask the player to acknowledge, where it not for the specification
+                break
+        else:
+            print("Nothing more in sight.\n" "       [Back]")
+
+            while True:
+                command = self._get_input(COMMAND)
+                if command == "back":
+                    break
+                elif command.isdigit() and int(command) in locations:
+                    command = int(command)
+                    chosen_location = locations[command]["name"]
+                    titanium_found = locations[command]["titanium"]
+                    print(
+                        f"Deploying robots\n"
+                        f"{chosen_location} explored successfully, with no damage taken.\n"
+                        f"Acquired {titanium_found} lumps of titanium."
+                    )
+                    self.titanium += titanium_found
+                    # Here I'd ask the player to acknowledge, where it not for the specification
+                    break
                 else:
                     print(INVALID_INPUT, end="\n\n")
 
-        # print("Nothing more in sight.\n"
-        #       "       [Back]")
         self.state = GameState.play
 
     def save(self):
