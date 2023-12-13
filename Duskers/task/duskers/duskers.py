@@ -146,14 +146,23 @@ class Game:
     # TODO: refactor this. It do be a mess. Remember to go to stage 4.
     def explore(self):
         locations_generator = self._get_locations(1, 9)
-        locations = next(locations_generator)  # First search always runs
+
+        command = "s"  # First search runs automatically
         while True:
-            command = self._get_input(COMMAND)
             if command == "s":
+                print("Searching")
+
                 try:
                     locations = next(locations_generator)
+
+                    for location_id, location_data in locations.items():
+                        print(f"[{location_id}] {location_data['name']}")
+                    print()
+
+                    print("[S] to continue searching")
+                    print("[Back] to cancel exploration", end="\n\n")
                 except StopIteration:
-                    print("Nothing more in sight.\n" "       [Back]")
+                    print("Nothing more in sight.\n       [Back]")
             elif command == "back":
                 break
             elif command.isdigit() and int(command) in locations:
@@ -172,6 +181,8 @@ class Game:
             else:
                 print(INVALID_INPUT, end="\n\n")
 
+            command = self._get_input(COMMAND)
+
         self.state = GameState.play
 
     def _get_locations(self, min_number, max_number):
@@ -184,14 +195,6 @@ class Game:
                 "name": random.choice(self.location_names),
                 "titanium": random.randint(10, 100),
             }
-
-            print("Searching")
-            for location_id, location_data in locations.items():
-                print(f"[{location_id}] {location_data['name']}")
-            print()
-
-            print("[S] to continue searching")
-            print("[Back] to cancel exploration", end="\n\n")
 
             yield locations
 
