@@ -25,9 +25,9 @@ class GameState(StrEnum):
 class Game:
     def __init__(self, config):
         self.config = config
-        self.locations = config.locations.replace("_", " ").split(",")
+        self.location_names = config.locations.replace("_", " ").split(",")
         # Discard any "" locations
-        self.locations = [location for location in self.locations if location]
+        self.location_names = [location for location in self.location_names if location]
 
         self.state = GameState.initializing
 
@@ -62,7 +62,7 @@ class Game:
             elif self.state == GameState.upgrade:
                 self.upgrade()
             elif self.state == GameState.game_menu:
-                self._submenu()
+                self.game_menu()
             elif self.state == GameState.play:
                 self.play()
 
@@ -143,40 +143,34 @@ class Game:
             else:
                 print(INVALID_INPUT, end="\n\n")
 
-    # TODO: refactor this. It do be a mess.
     def explore(self):
-        number_of_locations = random.randint(1, 9)
-        location_numbers = range(1, number_of_locations + 1)
+        locations_generator = self._get_locations(1, 9)
 
         locations = {}
-        for i in location_numbers:
-            locations[i] = {
-                "name": random.choice(self.locations),
-                "titanium": random.randint(10, 100),
-            }
+        command = "s"  # First search runs automatically
+        while True:
+            if command == "s":
+                print("Searching")
 
-            print("Searching")
-            for location_id, location_data in locations.items():
-                print(f"[{location_id}] {location_data['name']}")
-            print()
+                try:
+                    locations = next(locations_generator)
 
-            print("[S] to continue searching", end="\n\n")
+                    for location_id, location_data in locations.items():
+                        print(f"[{location_id}] {location_data['name']}")
+                    print()
 
-            while True:
-                command = self._get_input(COMMAND)
-                if command == "s":
-                    break
-                elif command == "back":
-                    break
-                elif command.isdigit() and int(command) in locations:
-                    command = int(command)
-                    break
-                else:
-                    print(INVALID_INPUT, end="\n\n")
-            if command == "back":
+                    print("[S] to continue searching")
+                    print("[Back] to cancel exploration", end="\n\n")
+
+                except StopIteration:
+                    print("Nothing more in sight.\n       [Back]")
+
+            elif command == "back":
                 break
 
-            if isinstance(command, int):
+            elif command.isdigit() and int(command) in locations:
+                command = int(command)
+
                 chosen_location = locations[command]["name"]
                 titanium_found = locations[command]["titanium"]
                 print(
@@ -187,29 +181,26 @@ class Game:
                 self.titanium += titanium_found
                 # Here I'd ask the player to acknowledge, where it not for the specification
                 break
-        else:
-            print("Nothing more in sight.\n" "       [Back]")
 
-            while True:
-                command = self._get_input(COMMAND)
-                if command == "back":
-                    break
-                elif command.isdigit() and int(command) in locations:
-                    command = int(command)
-                    chosen_location = locations[command]["name"]
-                    titanium_found = locations[command]["titanium"]
-                    print(
-                        f"Deploying robots\n"
-                        f"{chosen_location} explored successfully, with no damage taken.\n"
-                        f"Acquired {titanium_found} lumps of titanium."
-                    )
-                    self.titanium += titanium_found
-                    # Here I'd ask the player to acknowledge, where it not for the specification
-                    break
-                else:
-                    print(INVALID_INPUT, end="\n\n")
+            else:
+                print(INVALID_INPUT, end="\n\n")
+
+            command = self._get_input(COMMAND)
 
         self.state = GameState.play
+
+    def _get_locations(self, min_number, max_number):
+        number_of_locations = random.randint(min_number, max_number)
+        location_numbers = range(1, number_of_locations + 1)
+
+        locations = {}
+        for i in location_numbers:
+            locations[i] = {
+                "name": random.choice(self.location_names),
+                "titanium": random.randint(10, 100),
+            }
+
+            yield locations
 
     def save(self):
         print(COMING_SOON, end="\n\n")
@@ -219,7 +210,7 @@ class Game:
         print(COMING_SOON, end="\n\n")
         self.state = GameState.quitting
 
-    def _submenu(self):
+    def game_menu(self):
         print(MENU, end="\n\n")
 
         while True:
@@ -236,7 +227,6 @@ class Game:
                 self.state = GameState.quitting
                 break
             elif command == "exit":
-                print(COMING_SOON, end="\n\n")
                 self.state = GameState.quitting
                 break
             else:
