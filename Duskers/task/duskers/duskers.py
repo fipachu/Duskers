@@ -143,7 +143,6 @@ class Game:
             else:
                 print(INVALID_INPUT, end="\n\n")
 
-    # TODO: refactor this. It do be a mess. Remember to go to stage 4.
     def explore(self):
         locations_generator = self._get_locations(1, 9)
 
@@ -162,10 +161,13 @@ class Game:
 
                     print("[S] to continue searching")
                     print("[Back] to cancel exploration", end="\n\n")
+
                 except StopIteration:
                     print("Nothing more in sight.\n       [Back]")
+
             elif command == "back":
                 break
+
             elif command.isdigit() and int(command) in locations:
                 command = int(command)
 
@@ -179,6 +181,7 @@ class Game:
                 self.titanium += titanium_found
                 # Here I'd ask the player to acknowledge, where it not for the specification
                 break
+
             else:
                 print(INVALID_INPUT, end="\n\n")
 
