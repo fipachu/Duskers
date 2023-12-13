@@ -33,8 +33,8 @@ MENU = """\
                           | [Exit] game              |
                           |==========================|\
 """
-COMMAND = "Your command:\n"
-NAME = "Enter your name:\n"
+COMMAND = "Your command: "
+NAME = "Enter your name: "
 INVALID_INPUT = "Invalid input"
 COMING_SOON = "Coming SOON! Thanks for playing!"
 
