@@ -62,7 +62,7 @@ class Game:
             elif self.state == GameState.upgrade:
                 self.upgrade()
             elif self.state == GameState.game_menu:
-                self._submenu()
+                self.game_menu()
             elif self.state == GameState.play:
                 self.play()
 
@@ -210,7 +210,7 @@ class Game:
         print(COMING_SOON, end="\n\n")
         self.state = GameState.quitting
 
-    def _submenu(self):
+    def game_menu(self):
         print(MENU, end="\n\n")
 
         while True:
