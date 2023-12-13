@@ -147,6 +147,7 @@ class Game:
     def explore(self):
         locations_generator = self._get_locations(1, 9)
 
+        locations = {}
         command = "s"  # First search runs automatically
         while True:
             if command == "s":
