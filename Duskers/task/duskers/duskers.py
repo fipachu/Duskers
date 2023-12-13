@@ -1,3 +1,5 @@
+import random
+from argparse import ArgumentParser
 from enum import StrEnum, auto
 
 from constants import *
@@ -21,8 +23,15 @@ class GameState(StrEnum):
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, config):
+        self.config = config
+        self.locations = config.locations.replace("_", " ").split(",")
+        # Discard any "" locations
+        self.locations = [location for location in self.locations if location]
+
         self.state = GameState.initializing
+
+        self.titanium = 0
 
     @staticmethod
     def _get_input(prompt, lowercase=True):
@@ -114,10 +123,9 @@ class Game:
                 print(INVALID_INPUT, end="\n\n")
 
     def play(self):
-        print(HUB, end="\n\n")
+        print(HUB.format(self.titanium), end="\n\n")
 
         while True:
-            print(HUB, end="\n\n")
             command = self._get_input(COMMAND)
 
             if command == "ex":
@@ -135,9 +143,73 @@ class Game:
             else:
                 print(INVALID_INPUT, end="\n\n")
 
+    # TODO: refactor this. It do be a mess.
     def explore(self):
-        print(COMING_SOON, end="\n\n")
-        self.state = GameState.quitting
+        number_of_locations = random.randint(1, 9)
+        location_numbers = range(1, number_of_locations + 1)
+
+        locations = {}
+        for i in location_numbers:
+            locations[i] = {
+                "name": random.choice(self.locations),
+                "titanium": random.randint(10, 100),
+            }
+
+            print("Searching")
+            for location_id, location_data in locations.items():
+                print(f"[{location_id}] {location_data['name']}")
+            print()
+
+            print("[S] to continue searching", end="\n\n")
+
+            while True:
+                command = self._get_input(COMMAND)
+                if command == "s":
+                    break
+                elif command == "back":
+                    break
+                elif command.isdigit() and int(command) in locations:
+                    command = int(command)
+                    break
+                else:
+                    print(INVALID_INPUT, end="\n\n")
+            if command == "back":
+                break
+
+            if isinstance(command, int):
+                chosen_location = locations[command]["name"]
+                titanium_found = locations[command]["titanium"]
+                print(
+                    f"Deploying robots\n"
+                    f"{chosen_location} explored successfully, with no damage taken.\n"
+                    f"Acquired {titanium_found} lumps of titanium."
+                )
+                self.titanium += titanium_found
+                # Here I'd ask the player to acknowledge, where it not for the specification
+                break
+        else:
+            print("Nothing more in sight.\n" "       [Back]")
+
+            while True:
+                command = self._get_input(COMMAND)
+                if command == "back":
+                    break
+                elif command.isdigit() and int(command) in locations:
+                    command = int(command)
+                    chosen_location = locations[command]["name"]
+                    titanium_found = locations[command]["titanium"]
+                    print(
+                        f"Deploying robots\n"
+                        f"{chosen_location} explored successfully, with no damage taken.\n"
+                        f"Acquired {titanium_found} lumps of titanium."
+                    )
+                    self.titanium += titanium_found
+                    # Here I'd ask the player to acknowledge, where it not for the specification
+                    break
+                else:
+                    print(INVALID_INPUT, end="\n\n")
+
+        self.state = GameState.play
 
     def save(self):
         print(COMING_SOON, end="\n\n")
@@ -188,8 +260,22 @@ class Game:
         self.state = GameState.quitting
 
 
+def get_config():
+    parser = ArgumentParser()
+    parser.add_argument("seed", nargs="?", type=str, default=None)
+    parser.add_argument("min_animation_duration", nargs="?", type=int, default=0)
+    parser.add_argument("max_animation_duration", nargs="?", type=int, default=0)
+    parser.add_argument("locations", nargs="?", default=LOCATIONS)
+
+    args = parser.parse_args()
+    return args
+
+
 def main():
-    Game().start_game()
+    config = get_config()
+    random.seed(config.seed)
+
+    Game(config).start_game()
 
 
 if __name__ == "__main__":
