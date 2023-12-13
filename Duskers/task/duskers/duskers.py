@@ -163,7 +163,7 @@ class Game:
                     print("[Back] to cancel exploration", end="\n\n")
 
                 except StopIteration:
-                    print("Nothing more in sight.\n       [Back]")
+                    print("Nothing more in sight.\n       [Back]", end="\n\n")
 
             elif command == "back":
                 break
