@@ -160,9 +160,7 @@ class Game:
                 print(f"[{location_id}] {location_data['name']}")
             print()
 
-            print("[S] to continue searching")
-            print("[Back] to cancel exploration", end="\n\n")
-
+        for locations in self._get_locations(1, 9):
             while True:
                 command = self._get_input(COMMAND)
                 if command == "s":
@@ -171,26 +169,23 @@ class Game:
                     break
                 elif command.isdigit() and int(command) in locations:
                     command = int(command)
+
+                    chosen_location = locations[command]["name"]
+                    titanium_found = locations[command]["titanium"]
+                    print(
+                        f"Deploying robots\n"
+                        f"{chosen_location} explored successfully, with no damage taken.\n"
+                        f"Acquired {titanium_found} lumps of titanium."
+                    )
+                    self.titanium += titanium_found
+                    # Here I'd ask the player to acknowledge, where it not for the specification
                     break
                 else:
                     print(INVALID_INPUT, end="\n\n")
-            if command == "back":
-                break
-
-            if isinstance(command, int):
-                chosen_location = locations[command]["name"]
-                titanium_found = locations[command]["titanium"]
-                print(
-                    f"Deploying robots\n"
-                    f"{chosen_location} explored successfully, with no damage taken.\n"
-                    f"Acquired {titanium_found} lumps of titanium."
-                )
-                self.titanium += titanium_found
-                # Here I'd ask the player to acknowledge, where it not for the specification
+            if command == "back" or isinstance(command, int):
                 break
         else:
             print("Nothing more in sight.\n" "       [Back]")
-
             while True:
                 command = self._get_input(COMMAND)
                 if command == "back":
@@ -211,6 +206,27 @@ class Game:
                     print(INVALID_INPUT, end="\n\n")
 
         self.state = GameState.play
+
+    def _get_locations(self, min_number, max_number):
+        number_of_locations = random.randint(min_number, max_number)
+        location_numbers = range(1, number_of_locations + 1)
+
+        locations = {}
+        for i in location_numbers:
+            locations[i] = {
+                "name": random.choice(self.location_names),
+                "titanium": random.randint(10, 100),
+            }
+
+            print("Searching")
+            for location_id, location_data in locations.items():
+                print(f"[{location_id}] {location_data['name']}")
+            print()
+
+            print("[S] to continue searching")
+            print("[Back] to cancel exploration", end="\n\n")
+
+            yield locations
 
     def save(self):
         print(COMING_SOON, end="\n\n")
