@@ -145,65 +145,32 @@ class Game:
 
     # TODO: refactor this. It do be a mess. Remember to go to stage 4.
     def explore(self):
-        number_of_locations = random.randint(1, 9)
-        location_numbers = range(1, number_of_locations + 1)
-
-        locations = {}
-        for i in location_numbers:
-            locations[i] = {
-                "name": random.choice(self.location_names),
-                "titanium": random.randint(10, 100),
-            }
-
-            print("Searching")
-            for location_id, location_data in locations.items():
-                print(f"[{location_id}] {location_data['name']}")
-            print()
-
-        for locations in self._get_locations(1, 9):
-            while True:
-                command = self._get_input(COMMAND)
-                if command == "s":
-                    break
-                elif command == "back":
-                    break
-                elif command.isdigit() and int(command) in locations:
-                    command = int(command)
-
-                    chosen_location = locations[command]["name"]
-                    titanium_found = locations[command]["titanium"]
-                    print(
-                        f"Deploying robots\n"
-                        f"{chosen_location} explored successfully, with no damage taken.\n"
-                        f"Acquired {titanium_found} lumps of titanium."
-                    )
-                    self.titanium += titanium_found
-                    # Here I'd ask the player to acknowledge, where it not for the specification
-                    break
-                else:
-                    print(INVALID_INPUT, end="\n\n")
-            if command == "back" or isinstance(command, int):
+        locations_generator = self._get_locations(1, 9)
+        locations = next(locations_generator)  # First search always runs
+        while True:
+            command = self._get_input(COMMAND)
+            if command == "s":
+                try:
+                    locations = next(locations_generator)
+                except StopIteration:
+                    print("Nothing more in sight.\n" "       [Back]")
+            elif command == "back":
                 break
-        else:
-            print("Nothing more in sight.\n" "       [Back]")
-            while True:
-                command = self._get_input(COMMAND)
-                if command == "back":
-                    break
-                elif command.isdigit() and int(command) in locations:
-                    command = int(command)
-                    chosen_location = locations[command]["name"]
-                    titanium_found = locations[command]["titanium"]
-                    print(
-                        f"Deploying robots\n"
-                        f"{chosen_location} explored successfully, with no damage taken.\n"
-                        f"Acquired {titanium_found} lumps of titanium."
-                    )
-                    self.titanium += titanium_found
-                    # Here I'd ask the player to acknowledge, where it not for the specification
-                    break
-                else:
-                    print(INVALID_INPUT, end="\n\n")
+            elif command.isdigit() and int(command) in locations:
+                command = int(command)
+
+                chosen_location = locations[command]["name"]
+                titanium_found = locations[command]["titanium"]
+                print(
+                    f"Deploying robots\n"
+                    f"{chosen_location} explored successfully, with no damage taken.\n"
+                    f"Acquired {titanium_found} lumps of titanium."
+                )
+                self.titanium += titanium_found
+                # Here I'd ask the player to acknowledge, where it not for the specification
+                break
+            else:
+                print(INVALID_INPUT, end="\n\n")
 
         self.state = GameState.play
 
