@@ -25,9 +25,9 @@ class GameState(StrEnum):
 class Game:
     def __init__(self, config):
         self.config = config
-        self.locations = config.locations.replace("_", " ").split(",")
+        self.location_names = config.locations.replace("_", " ").split(",")
         # Discard any "" locations
-        self.locations = [location for location in self.locations if location]
+        self.location_names = [location for location in self.location_names if location]
 
         self.state = GameState.initializing
 
@@ -151,7 +151,7 @@ class Game:
         locations = {}
         for i in location_numbers:
             locations[i] = {
-                "name": random.choice(self.locations),
+                "name": random.choice(self.location_names),
                 "titanium": random.randint(10, 100),
             }
 
