@@ -46,6 +46,7 @@ LOADED = """\
 
 COMMAND = "Your command: "
 NAME = "Enter your name: "
+GREETING = "Greetings, commander {}!"
 INVALID_INPUT = "Invalid input"
 COMING_SOON = "Coming SOON! Thanks for playing!"
 

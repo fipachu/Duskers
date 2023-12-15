@@ -149,7 +149,7 @@ class Game:
                 self.robots = chosen_slot["robots"]
 
                 print(LOADED, sep="\n\n")
-                print(f"Greetings, commander {self.player_name}!")
+                print(GREETING.format(self.player_name), end="\n\n")
 
                 self.state = GameState.play
                 break
@@ -162,7 +162,7 @@ class Game:
     def pre_play(self):
         self.player_name = self._get_input(NAME, False)
 
-        print(f"Greetings, commander {self.player_name}!")
+        print(GREETING.format(self.player_name))
         print(
             "Are you ready to begin?",
             "    [Yes] [No] Return to Main [Menu]",
