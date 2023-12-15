@@ -105,7 +105,7 @@ class Game:
             break
 
     def loading(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     def pre_play(self):
         name = self._get_input(NAME, False)
@@ -220,11 +220,11 @@ class Game:
             command = self._get_input(COMMAND)
 
             if command == "1":
-                raise NotImplemented
+                raise NotImplementedError
             elif command == "2":
-                raise NotImplemented
+                raise NotImplementedError
             elif command == "3":
-                raise NotImplemented
+                raise NotImplementedError
             elif command == "back":
                 self.state = GameState.play
                 break
