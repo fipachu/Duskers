@@ -1,3 +1,5 @@
+import json
+import os.path
 import random
 from argparse import ArgumentParser
 from enum import StrEnum, auto
@@ -34,6 +36,15 @@ class Game:
         self.state = GameState.initializing
 
         self.titanium = 0
+
+        self.savefile = "save_file.json"
+        self.init_savefile()
+
+    def init_savefile(self):
+        if not os.path.isfile(self.savefile):
+            with open(self.savefile, 'w') as f:
+                json.dump({"1": {}, "2": {}, "3": {}}, f, indent=2)
+                f.write("\n")
 
     @staticmethod
     def _get_input(prompt, lowercase=True):
