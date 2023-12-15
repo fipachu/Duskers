@@ -213,8 +213,23 @@ class Game:
             yield locations
 
     def save(self):
-        print(COMING_SOON, end="\n\n")
-        self.state = GameState.quitting
+        print("Select save slot:")
+        print("[1] empty", "[2] empty", "[3] empty", "[Back]", sep="\n", end="\n\n")
+
+        while True:
+            command = self._get_input(COMMAND)
+
+            if command == "1":
+                raise NotImplemented
+            elif command == "2":
+                raise NotImplemented
+            elif command == "3":
+                raise NotImplemented
+            elif command == "back":
+                self.state = GameState.play
+                break
+            else:
+                print(INVALID_INPUT, end="\n\n")
 
     def upgrade(self):
         print(COMING_SOON, end="\n\n")
