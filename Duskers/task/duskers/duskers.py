@@ -149,6 +149,7 @@ class Game:
                 self.robots = chosen_slot["robots"]
 
                 print(LOADED, sep="\n\n")
+                print(f"Greetings, commander {self.player_name}!")
 
                 self.state = GameState.play
                 break
