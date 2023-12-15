@@ -75,7 +75,7 @@ class Game:
                 self.main_menu()
 
             elif self.state == GameState.loading:
-                self.loading()
+                self.load()
 
             elif self.state == GameState.pre_play:
                 self.pre_play()
@@ -131,8 +131,30 @@ class Game:
 
             break
 
-    def loading(self):
-        raise NotImplementedError
+    def load(self):
+        savestate = self.read_savefile()
+
+        print("Select save slot:")
+        self.print_slots(savestate)
+        print("[Back]", end="\n\n")
+
+        while True:
+            command = self._get_input(COMMAND)
+
+            if command in savestate:
+                chosen_slot = savestate[command]
+
+                self.player_name = chosen_slot["player_name"]
+                self.titanium = chosen_slot["titanium"]
+                self.robots = chosen_slot["robots"]
+
+                self.state = GameState.play
+                break
+            elif command == "back":
+                self.state = GameState.game_menu
+                break
+            else:
+                print(INVALID_INPUT)
 
     def pre_play(self):
         self.player_name = self._get_input(NAME, False)
