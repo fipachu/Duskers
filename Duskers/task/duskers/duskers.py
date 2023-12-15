@@ -259,6 +259,7 @@ class Game:
                 self.save(savestate)
 
                 self.state = GameState.play
+                break
             elif command == "back":
                 self.state = GameState.play
                 break
