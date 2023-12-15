@@ -293,7 +293,8 @@ class Game:
             else:
                 print(INVALID_INPUT, end="\n\n")
 
-    def print_slots(self, savestate):
+    @staticmethod
+    def print_slots(savestate):
         for slot, data in savestate.items():
             if data:
                 print(
