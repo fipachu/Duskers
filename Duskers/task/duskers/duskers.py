@@ -11,6 +11,8 @@ class GameState(StrEnum):
 
     main_menu = auto()
 
+    loading = auto()
+
     pre_play = auto()
     play = auto()
     explore = auto()
@@ -53,6 +55,9 @@ class Game:
             if self.state == GameState.main_menu:
                 self.main_menu()
 
+            elif self.state == GameState.loading:
+                self.loading()
+
             elif self.state == GameState.pre_play:
                 self.pre_play()
             elif self.state == GameState.explore:
@@ -78,13 +83,15 @@ class Game:
 
     def main_menu(self):
         print(TITLE)
-        print("[Play]", "[High] Scores", "[Help]", "[Exit]", sep="\n", end="\n\n")
+        print("[New] Game", "[Load] Game", "[High] Scores", "[Help]", "[Exit]", sep="\n", end="\n\n")
 
         while True:
             command = self._get_input(COMMAND)
 
-            if command == "play":
+            if command == "new":
                 self.state = GameState.pre_play
+            elif command == "load":
+                self.state = GameState.loading
             elif command == "high":
                 self.state = GameState.high_scores
             elif command == "help":
@@ -96,6 +103,9 @@ class Game:
                 continue
 
             break
+
+    def loading(self):
+        raise NotImplemented
 
     def pre_play(self):
         name = self._get_input(NAME, False)
