@@ -1,3 +1,4 @@
+import datetime
 import json
 import os.path
 import random
@@ -35,6 +36,8 @@ class Game:
 
         self.state = GameState.initializing
 
+        self.player_name = None
+        self.robots = 3
         self.titanium = 0
 
         self.savefile = "save_file.json"
@@ -132,9 +135,9 @@ class Game:
         raise NotImplementedError
 
     def pre_play(self):
-        name = self._get_input(NAME, False)
+        self.player_name = self._get_input(NAME, False)
 
-        print(f"Greetings, commander {name}!")
+        print(f"Greetings, commander {self.player_name}!")
         print(
             "Are you ready to begin?",
             "    [Yes] [No] Return to Main [Menu]",
@@ -256,17 +259,25 @@ class Game:
         while True:
             command = self._get_input(COMMAND)
 
-            if command == "1":
-                raise NotImplementedError
-            elif command == "2":
-                raise NotImplementedError
-            elif command == "3":
-                raise NotImplementedError
+            if command in savestate:
+                savestate[command] = {
+                    "player_name": self.player_name,
+                    "titanium": self.titanium,
+                    "robots": self.robots,
+                    "last_save": str(datetime.datetime.now()),
+                }
+                self.save(savestate)
+
+                self.state = GameState.play
             elif command == "back":
                 self.state = GameState.play
                 break
             else:
                 print(INVALID_INPUT, end="\n\n")
+
+    def save(self, savestate):
+        with open(self.savefile, "w") as f:
+            json.dump(savestate, f, indent=2)
 
     def upgrade(self):
         print(COMING_SOON, end="\n\n")
