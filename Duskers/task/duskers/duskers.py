@@ -46,6 +46,11 @@ class Game:
                 json.dump({"1": {}, "2": {}, "3": {}}, f, indent=2)
                 f.write("\n")
 
+    def read_savefile(self):
+        with open(self.savefile, 'r') as f:
+            savestate = json.load(f)
+        return savestate
+
     @staticmethod
     def _get_input(prompt, lowercase=True):
         command = input(prompt)
