@@ -148,6 +148,8 @@ class Game:
                 self.titanium = chosen_slot["titanium"]
                 self.robots = chosen_slot["robots"]
 
+                print(LOADED, sep="\n\n")
+
                 self.state = GameState.play
                 break
             elif command == "back":
@@ -279,6 +281,8 @@ class Game:
                     "last_save": str(datetime.datetime.now()),
                 }
                 self.save(savestate)
+
+                print(SAVED, end="\n\n")
 
                 self.state = GameState.play
                 break
