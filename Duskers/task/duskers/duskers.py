@@ -79,7 +79,7 @@ class Game:
             elif self.state == GameState.explore:
                 self.explore()
             elif self.state == GameState.save:
-                self.save()
+                self.save_menu()
             elif self.state == GameState.upgrade:
                 self.upgrade()
             elif self.state == GameState.game_menu:
@@ -228,9 +228,20 @@ class Game:
 
             yield locations
 
-    def save(self):
+    def save_menu(self):
+        savestate = self.read_savefile()
+
         print("Select save slot:")
-        print("[1] empty", "[2] empty", "[3] empty", "[Back]", sep="\n", end="\n\n")
+        for slot, data in savestate.items():
+            if data:
+                print(f"[{slot}] "
+                      f"{data['player_name']} "
+                      f"Titanium:{data['titanium']} "
+                      f"Robots:{data['robots']} "
+                      f"Last_save:{data['last_save']}")
+            else:
+                print(f"[{slot}] empty")
+        print("[Back]", end="\n\n")
 
         while True:
             command = self._get_input(COMMAND)
