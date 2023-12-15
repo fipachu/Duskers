@@ -243,17 +243,7 @@ class Game:
         savestate = self.read_savefile()
 
         print("Select save slot:")
-        for slot, data in savestate.items():
-            if data:
-                print(
-                    f"[{slot}] "
-                    f"{data['player_name']} "
-                    f"Titanium:{data['titanium']} "
-                    f"Robots:{data['robots']} "
-                    f"Last_save:{data['last_save']}"
-                )
-            else:
-                print(f"[{slot}] empty")
+        self.print_slots(savestate)
         print("[Back]", end="\n\n")
 
         while True:
@@ -274,6 +264,19 @@ class Game:
                 break
             else:
                 print(INVALID_INPUT, end="\n\n")
+
+    def print_slots(self, savestate):
+        for slot, data in savestate.items():
+            if data:
+                print(
+                    f"[{slot}] "
+                    f"{data['player_name']} "
+                    f"Titanium:{data['titanium']} "
+                    f"Robots:{data['robots']} "
+                    f"Last_save:{data['last_save']}"
+                )
+            else:
+                print(f"[{slot}] empty")
 
     def save(self, savestate):
         with open(self.savefile, "w") as f:
