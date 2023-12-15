@@ -42,12 +42,12 @@ class Game:
 
     def init_savefile(self):
         if not os.path.isfile(self.savefile):
-            with open(self.savefile, 'w') as f:
+            with open(self.savefile, "w") as f:
                 json.dump({"1": {}, "2": {}, "3": {}}, f, indent=2)
                 f.write("\n")
 
     def read_savefile(self):
-        with open(self.savefile, 'r') as f:
+        with open(self.savefile, "r") as f:
             savestate = json.load(f)
         return savestate
 
@@ -99,7 +99,15 @@ class Game:
 
     def main_menu(self):
         print(TITLE)
-        print("[New] Game", "[Load] Game", "[High] Scores", "[Help]", "[Exit]", sep="\n", end="\n\n")
+        print(
+            "[New] Game",
+            "[Load] Game",
+            "[High] Scores",
+            "[Help]",
+            "[Exit]",
+            sep="\n",
+            end="\n\n",
+        )
 
         while True:
             command = self._get_input(COMMAND)
@@ -234,11 +242,13 @@ class Game:
         print("Select save slot:")
         for slot, data in savestate.items():
             if data:
-                print(f"[{slot}] "
-                      f"{data['player_name']} "
-                      f"Titanium:{data['titanium']} "
-                      f"Robots:{data['robots']} "
-                      f"Last_save:{data['last_save']}")
+                print(
+                    f"[{slot}] "
+                    f"{data['player_name']} "
+                    f"Titanium:{data['titanium']} "
+                    f"Robots:{data['robots']} "
+                    f"Last_save:{data['last_save']}"
+                )
             else:
                 print(f"[{slot}] empty")
         print("[Back]", end="\n\n")
