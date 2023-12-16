@@ -67,9 +67,9 @@ class Game:
 
     def start_game(self):
         self.state = GameState.main_menu
-        self.loop()
+        self.controller()
 
-    def loop(self):
+    def controller(self):
         while self.state != GameState.quitting:
             if self.state == GameState.main_menu:
                 self.main_menu()
