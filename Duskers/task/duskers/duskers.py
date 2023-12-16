@@ -316,7 +316,7 @@ class Game:
 
     def upgrade(self):
         print(COMING_SOON, end="\n\n")
-        self.set_state(GameState.quitting)
+        self.set_state(GameState.play)
 
     def game_menu(self):
         print(MENU, end="\n\n")
@@ -354,7 +354,7 @@ class Game:
 
     def help(self):
         print(COMING_SOON, end="\n\n")
-        self.set_state(GameState.quitting)
+        self.set_state(GameState.play)
 
 
 def get_config():
