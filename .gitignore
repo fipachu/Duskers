@@ -6,6 +6,9 @@ __pycache__/
 # Temporary file for experiments
 /Duskers/task/duskers/_tmp.py
 
+# PyDuskers savefile
+/Duskers/task/duskers/save_file.json
+
 # ============================ EXPERIMENTAL ============================
 # Magic .yaml files
 *task-info.yaml
