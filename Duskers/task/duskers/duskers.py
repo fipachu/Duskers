@@ -35,6 +35,8 @@ class Game:
         self.location_names = [location for location in self.location_names if location]
 
         self.gamestate = GameState.initializing
+        # Janky hack to allow save_menu to do different things after it's finished
+        self.next_gamestate = None
 
         self.player_name = None
         self.robots = 3
@@ -195,6 +197,7 @@ class Game:
                 break
             elif command == "save":
                 self.gamestate = GameState.save
+                self.next_gamestate = GameState.play
                 break
             elif command == "up":
                 self.gamestate = GameState.upgrade
@@ -269,7 +272,7 @@ class Game:
 
         print("Select save slot:")
         self.print_slots(savestate)
-        print("[Back]", end="\n\n")
+        print("[Back] to game", end="\n\n")
 
         while True:
             command = self._get_input(COMMAND)
@@ -285,7 +288,8 @@ class Game:
 
                 print(SAVED, end="\n\n")
 
-                self.gamestate = GameState.play
+                # If next_gamestate is not set, fallback to play
+                self.gamestate = self.next_gamestate or GameState.play
                 break
             elif command == "back":
                 self.gamestate = GameState.play
@@ -328,8 +332,8 @@ class Game:
                 self.gamestate = GameState.main_menu
                 break
             elif command == "save":
-                print(COMING_SOON, end="\n\n")
-                self.state = GameState.quitting
+                self.gamestate = GameState.save
+                self.next_gamestate = GameState.quitting
                 break
             elif command == "exit":
                 self.gamestate = GameState.quitting
