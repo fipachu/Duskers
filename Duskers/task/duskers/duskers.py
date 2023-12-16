@@ -35,7 +35,6 @@ class Game:
         self.location_names = [location for location in self.location_names if location]
 
         self.gamestate = GameState.initializing
-        # Janky hack to allow save_menu to do different things after it's finished
         self.next_gamestate = None
 
         self.player_name = None
@@ -64,11 +63,12 @@ class Game:
         print()
         return command
 
-    def set_state(self, new_state):
-        self.gamestate = new_state
+    def set_state(self, gamestate, next_gamestate=None):
+        self.gamestate = gamestate
+        self.next_gamestate = next_gamestate
 
     def start_game(self):
-        self.gamestate = GameState.main_menu
+        self.set_state(GameState.main_menu)
         self.controller()
 
     def controller(self):
@@ -118,15 +118,15 @@ class Game:
             command = self._get_input(COMMAND)
 
             if command == "new":
-                self.gamestate = GameState.pre_play
+                self.set_state(GameState.pre_play)
             elif command == "load":
-                self.gamestate = GameState.loading
+                self.set_state(GameState.loading)
             elif command == "high":
-                self.gamestate = GameState.high_scores
+                self.set_state(GameState.high_scores)
             elif command == "help":
-                self.gamestate = GameState.help
+                self.set_state(GameState.help)
             elif command == "exit":
-                self.gamestate = GameState.quitting
+                self.set_state(GameState.quitting)
             else:
                 print(INVALID_INPUT, end="\n\n")
                 continue
@@ -153,10 +153,10 @@ class Game:
                 print(LOADED, sep="\n\n")
                 print(GREETING.format(self.player_name), end="\n\n")
 
-                self.gamestate = GameState.play
+                self.set_state(GameState.play)
                 break
             elif command == "back":
-                self.gamestate = GameState.game_menu
+                self.set_state(GameState.game_menu)
                 break
             else:
                 print(INVALID_INPUT)
@@ -176,10 +176,10 @@ class Game:
             command = self._get_input(COMMAND)
 
             if command == "yes":
-                self.gamestate = GameState.play
+                self.set_state(GameState.play)
                 break
             elif command == "menu":
-                self.gamestate = GameState.main_menu
+                self.set_state(GameState.main_menu)
                 break
             elif command == "no":
                 print("How about now.")
@@ -193,17 +193,16 @@ class Game:
             command = self._get_input(COMMAND)
 
             if command == "ex":
-                self.gamestate = GameState.explore
+                self.set_state(GameState.explore)
                 break
             elif command == "save":
-                self.gamestate = GameState.save
-                self.next_gamestate = GameState.play
+                self.set_state(GameState.save, GameState.play)
                 break
             elif command == "up":
-                self.gamestate = GameState.upgrade
+                self.set_state(GameState.upgrade)
                 break
             elif command == "m":
-                self.gamestate = GameState.game_menu
+                self.set_state(GameState.game_menu)
                 break
             else:
                 print(INVALID_INPUT, end="\n\n")
@@ -252,7 +251,7 @@ class Game:
 
             command = self._get_input(COMMAND)
 
-        self.gamestate = GameState.play
+        self.set_state(GameState.play)
 
     def _get_locations(self, min_number, max_number):
         number_of_locations = random.randint(min_number, max_number)
@@ -289,10 +288,10 @@ class Game:
                 print(SAVED, end="\n\n")
 
                 # If next_gamestate is not set, fallback to play
-                self.gamestate = self.next_gamestate or GameState.play
+                self.set_state(self.next_gamestate or GameState.play)
                 break
             elif command == "back":
-                self.gamestate = GameState.play
+                self.set_state(GameState.play)
                 break
             else:
                 print(INVALID_INPUT, end="\n\n")
@@ -317,7 +316,7 @@ class Game:
 
     def upgrade(self):
         print(COMING_SOON, end="\n\n")
-        self.gamestate = GameState.quitting
+        self.set_state(GameState.quitting)
 
     def game_menu(self):
         print(MENU, end="\n\n")
@@ -326,17 +325,16 @@ class Game:
             command = self._get_input(COMMAND)
 
             if command == "back":
-                self.gamestate = GameState.play
+                self.set_state(GameState.play)
                 break
             elif command == "main":
-                self.gamestate = GameState.main_menu
+                self.set_state(GameState.main_menu)
                 break
             elif command == "save":
-                self.gamestate = GameState.save
-                self.next_gamestate = GameState.quitting
+                self.set_state(GameState.save, GameState.quitting)
                 break
             elif command == "exit":
-                self.gamestate = GameState.quitting
+                self.set_state(GameState.quitting)
                 break
             else:
                 print(INVALID_INPUT, end="\n\n")
@@ -348,7 +346,7 @@ class Game:
 
         while True:
             if command == "back":
-                self.gamestate = GameState.main_menu
+                self.set_state(GameState.main_menu)
                 break
             else:
                 print(INVALID_INPUT, end="\n\n")
@@ -356,7 +354,7 @@ class Game:
 
     def help(self):
         print(COMING_SOON, end="\n\n")
-        self.gamestate = GameState.quitting
+        self.set_state(GameState.quitting)
 
 
 def get_config():
