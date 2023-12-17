@@ -361,6 +361,7 @@ class Game:
 def get_config():
     parser = ArgumentParser()
     parser.add_argument("seed", nargs="?", type=str, default=None)
+    # No animations implemented as of commit ad068a38
     parser.add_argument("min_animation_duration", nargs="?", type=int, default=0)
     parser.add_argument("max_animation_duration", nargs="?", type=int, default=0)
     parser.add_argument("locations", nargs="?", default=LOCATIONS)
