@@ -29,6 +29,9 @@ class GameState(StrEnum):
 
 class Game:
     def __init__(self, config):
+        self.has_titanium_scanner = False
+        self.has_encounter_scanner = False
+
         self.config = config
         self.location_names = config.locations.replace("_", " ").split(",")
         # Discard any "" locations
@@ -220,7 +223,16 @@ class Game:
                     locations = next(locations_generator)
 
                     for location_id, location_data in locations.items():
-                        print(f"[{location_id}] {location_data['name']}")
+                        output = []
+                        output += f"[{location_id}] {location_data['name']}"
+                        if self.has_titanium_scanner:
+                            output += f"Titanium:{location_data['titanium']}"
+                        if self.has_encounter_scanner:
+                            output += (
+                                f"Encounter_rate:{location_data['encounter_rate']:.0%}"
+                            )
+                        output = "\n".join(output)
+                        print(output)
                     print()
 
                     print("[S] to continue searching")
