@@ -243,7 +243,8 @@ class Game:
                     f"Acquired {titanium_found} lumps of titanium."
                 )
                 self.titanium += titanium_found
-                # Here I'd ask the player to acknowledge, where it not for the specification
+                # Here I'd ask the player to acknowledge, where it not for
+                # the specification
                 break
 
             else:
