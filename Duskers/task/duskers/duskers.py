@@ -246,15 +246,20 @@ class Game:
 
             elif command.isdigit() and int(command) in locations:
                 command = int(command)
+                location = locations[command]
 
-                chosen_location = locations[command]["name"]
-                titanium_found = locations[command]["titanium"]
-                print(
-                    f"Deploying robots\n"
-                    f"{chosen_location} explored successfully, with no damage taken.\n"
-                    f"Acquired {titanium_found} lumps of titanium."
-                )
-                self.titanium += titanium_found
+                is_encounter = random.random() < location["encounter_rate"]
+
+                print(f"Deploying robots")
+                if is_encounter:
+                    print("Enemy encounter")
+                print(f"{location['name']} explored successfully, ", end="")
+                print("1 robot lost." if is_encounter else "with no damage taken.")
+                print(f"Acquired {location['titanium']} lumps of titanium.", end="\n\n")
+
+                self.titanium += location["titanium"]
+                if is_encounter:
+                    self.robots -= 1
                 # Here I'd ask the player to acknowledge, where it not for
                 # the specification
                 break
