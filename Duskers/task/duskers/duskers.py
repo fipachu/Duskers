@@ -263,6 +263,7 @@ class Game:
             locations[i] = {
                 "name": random.choice(self.location_names),
                 "titanium": random.randint(10, 100),
+                "encounter_rate": random.random(),
             }
 
             yield locations
