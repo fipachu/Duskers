@@ -29,8 +29,7 @@ class GameState(StrEnum):
 
 class Game:
     def __init__(self, config):
-        self.has_titanium_scanner = False
-        self.has_encounter_scanner = False
+        self.upgrades = []
 
         self.config = config
         self.location_names = config.locations.replace("_", " ").split(",")
@@ -153,6 +152,7 @@ class Game:
                 self.player_name = chosen_slot["player_name"]
                 self.titanium = chosen_slot["titanium"]
                 self.robots = chosen_slot["robots"]
+                self.upgrades = chosen_slot["upgrades"]
 
                 print(LOADED, sep="\n\n")
                 print(GREETING.format(self.player_name), end="\n\n")
@@ -243,9 +243,9 @@ class Game:
 
                     for location_id, location_data in locations.items():
                         output = [f"[{location_id}] {location_data['name']}"]
-                        if self.has_titanium_scanner:
+                        if "1" in self.upgrades:
                             output.append(f"Titanium:{location_data['titanium']}")
-                        if self.has_encounter_scanner:
+                        if "2" in self.upgrades:
                             output.append(
                                 f"Encounter_rate:{location_data['encounter_rate']:.0%}"
                             )
@@ -318,6 +318,7 @@ class Game:
                     "player_name": self.player_name,
                     "titanium": self.titanium,
                     "robots": self.robots,
+                    "upgrades": self.upgrades,
                     "last_save": str(datetime.datetime.now()),
                 }
                 self.save(savestate)
