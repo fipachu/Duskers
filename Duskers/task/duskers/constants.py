@@ -79,6 +79,11 @@ LOADED = """\
                         |    GAME LOADED SUCCESSFULLY  |
                         |==============================|\
 """
+GAME_OVER = """\
+                        |==============================|
+                        |          GAME OVER!          |
+                        |==============================|\
+"""
 
 COMMAND = "Your command: "
 NAME = "Enter your name: "
