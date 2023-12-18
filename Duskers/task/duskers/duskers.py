@@ -41,6 +41,7 @@ class Game:
         self.next_gamestate = None
 
         self.player_name = None
+        # They are called DRONES! Not robots... Have it your way Hyperskill... for now.
         self.robots = 3
         self.titanium = 0
 
@@ -190,7 +191,8 @@ class Game:
                 print(INVALID_INPUT, end="\n\n")
 
     def play(self):
-        print(HUB.format(self.titanium), end="\n\n")
+        self._print_hub(5, "|")
+        print()
 
         while True:
             command = self._get_input(COMMAND)
@@ -210,6 +212,23 @@ class Game:
             else:
                 print(INVALID_INPUT, end="\n\n")
 
+    def _print_hub(self, padding, separator):
+        padding = padding * " "
+        drones = []
+        for line in DRONE.split("\n"):
+            # Extra empty column before the first drone
+            new_line = [" "]
+            for i in range(self.robots):
+                new_line.append(
+                    padding
+                    + line
+                    # No characters after the last drone
+                    + (padding + separator if i < self.robots - 1 else "")
+                )
+            drones.append("".join(new_line))
+        drones = "\n".join(drones)
+        print(HUB.format(drones, self.titanium))
+
     def explore(self):
         locations_generator = self._get_locations(1, 9)
 
@@ -223,12 +242,11 @@ class Game:
                     locations = next(locations_generator)
 
                     for location_id, location_data in locations.items():
-                        output = []
-                        output += f"[{location_id}] {location_data['name']}"
+                        output = [f"[{location_id}] {location_data['name']}"]
                         if self.has_titanium_scanner:
-                            output += f"Titanium:{location_data['titanium']}"
+                            output.append(f"Titanium:{location_data['titanium']}")
                         if self.has_encounter_scanner:
-                            output += (
+                            output.append(
                                 f"Encounter_rate:{location_data['encounter_rate']:.0%}"
                             )
                         output = "\n".join(output)
