@@ -353,8 +353,40 @@ class Game:
             json.dump(savestate, f, indent=2)
 
     def upgrade(self):
-        print(COMING_SOON, end="\n\n")
-        self.set_state(GameState.play)
+        print(UPGRADE_MENU)
+
+        while True:
+            command = self._get_input(COMMAND)
+
+            if command == "back":
+                self.set_state(GameState.play)
+                break
+            elif command in UPGRADES:
+                upgrade = UPGRADES[command]
+                if self.titanium < upgrade["price"]:
+                    print("Not enough titanium!")
+                elif upgrade["name"] in self.upgrades:
+                    print(f"You already own {upgrade['name']}!")
+                else:
+                    self.upgrades.append(command)
+                    self.titanium -= upgrade["price"]
+                    print(f"Purchase successful. {upgrade['description']}")
+                    break
+            elif command in ITEMS:
+                # Luckily a new robot is the only item in the shop
+                new_robot = ITEMS[command]
+                if self.titanium < new_robot["price"]:
+                    print("Not enough titanium!")
+                elif self.robots >= 4:
+                    print("Robot bay at max capacity!")
+                else:
+                    self.robots += 1
+                    self.titanium -= new_robot["price"]
+                    print(f"Purchase successful. {new_robot['description']}")
+                    break
+            else:
+                print(INVALID_INPUT)
+        self.gamestate = GameState.play
 
     def game_menu(self):
         print(MENU, end="\n\n")
