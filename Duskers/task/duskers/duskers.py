@@ -261,7 +261,7 @@ class Game:
                             output.append(
                                 f"Encounter_rate:{location_data['encounter_rate']:.0%}"
                             )
-                        output = "\n".join(output)
+                        output = " ".join(output)
                         print(output)
                     print()
 
