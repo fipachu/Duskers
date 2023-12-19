@@ -445,7 +445,16 @@ class Game:
                 print(INVALID_INPUT, end="\n\n")
 
     def high_scores(self):
-        print("No scores to display.", "    [Back]", end="\n\n")
+        high_scores = self.read_scores_file()
+
+        if not high_scores:
+            print("No scores to display.")
+        else:
+            print("HIGH SCORES", end="\n\n")
+            for number, (score, name) in enumerate(high_scores, start=1):
+                number = f"({number})"
+                print(f"{number:<4} {name} {score}")
+        print("[Back]", end="\n\n")
 
         command = self._get_input(COMMAND)
 
