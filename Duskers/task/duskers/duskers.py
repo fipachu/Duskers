@@ -166,7 +166,7 @@ class Game:
                 self.robots = chosen_slot["robots"]
                 self.upgrades = chosen_slot["upgrades"]
 
-                print(LOADED, sep="\n\n")
+                print(LOADED, end="\n\n")
                 print(GREETING.format(self.player_name), end="\n\n")
 
                 self.set_state(GameState.play)
@@ -284,7 +284,7 @@ class Game:
                 if is_encounter and self.robots <= 1:
                     print("Enemy encounter!!!")
                     print("Mission aborted, the last robot lost...")
-                    print(GAME_OVER)
+                    print(GAME_OVER, end="\n\n")
                     self.save_score()
                     self.set_state(GameState.main_menu)
                     return
