@@ -287,7 +287,7 @@ class Game:
                     print(GAME_OVER)
                     self.save_score()
                     self.set_state(GameState.main_menu)
-                    break
+                    return
                 else:
                     if is_encounter:
                         print("Enemy encounter")
