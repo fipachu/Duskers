@@ -10,6 +10,8 @@ __pycache__/
 /Duskers/task/duskers/save_file.json
 # Other savefile? Perhaps it was made by the Hyperskill tests?
 /Duskers/task/save_file.json
+# High scores
+/Duskers/task/duskers/high_scores.json
 
 # ============================ EXPERIMENTAL ============================
 # Magic .yaml files

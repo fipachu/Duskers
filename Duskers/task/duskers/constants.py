@@ -8,20 +8,68 @@ TITLE = """\
                                 (Survival ASCII Strategy Game)
 +===========================================================================================+\
 """
+HELP = """\
+  Strategic game inspired by Tim Keenan's "Duskers".
+
+  You're in charge of a team of drones exploring mysterious locations
+  and looking for titanium.
+
+  To play the game, enter commands provided in square braces (ex. [Back]).
+  Command are case-insensitive (back, Back, and bAcK all map to [Back]).
+
+  Keep an aye on your drone bay! When you lose all your drones, the game is over!
+  [Back]\
+"""
 HUB = """\
 __________(LOG)__________________________________________________(LOG)__________
 +==============================================================================+
-         $()$()$      |      $()$()$     |      $()$()$
-        $$.....$$     |     $$.....$$    |     $$.....$$
-         $$$$$$$      |      $$$$$$$     |      $$$$$$$
-        $$$...$$$     |     $$$...$$$    |     $$$...$$$
-        $~$$$$$~$     |     $~$$$$$~$    |     $~$$$$$~$
+{}
 +==============================================================================+
 | Titanium: {:<67}|
 +==============================================================================+
 |                  [Ex]plore                          [Up]grade                |
 |                  [Save]                             [M]enu                   |
 +==============================================================================+\
+"""
+DRONE = """\
+ $()$()$ 
+$$.....$$
+ $$$$$$$ 
+$$$...$$$
+$~$$$$$~$\
+"""
+# This should really be a tuple of structs, buy it's already a dictionary and I just
+# wanna get it done
+UPGRADES = {
+    "1": {
+        "name": "Titanium Scan",
+        "price": 250,
+        "description": "You can now see how much titanium you can get from each found location.",
+    },
+    "2": {
+        "name": "Enemy Encounter Scan",
+        "price": 500,
+        "description": "You will now see how likely you will encounter an enemy at each found location.",
+    },
+}
+ITEMS = {
+    "3": {
+        "name": "New Robot",
+        "price": 1000,
+        "description": "You now have an additional robot.",
+    }
+}
+
+UPGRADE_MENU = f"""\
+                       |================================|
+                       |          UPGRADE STORE         |
+                       |                         Price  |
+                       | [1] {UPGRADES["1"]["name"]:<20} {UPGRADES["1"]["price"]:>4}  |
+                       | [2] {UPGRADES["2"]["name"]:<20} {UPGRADES["2"]["price"]:>4}  |
+                       | [3] {ITEMS["3"]["name"]:<20} {ITEMS["3"]["price"]:>4}  |
+                       |                                |
+                       | [Back]                         |
+                       |================================|\
 """
 MENU = """\
                           |==========================|
@@ -41,6 +89,11 @@ SAVED = """\
 LOADED = """\
                         |==============================|
                         |    GAME LOADED SUCCESSFULLY  |
+                        |==============================|\
+"""
+GAME_OVER = """\
+                        |==============================|
+                        |          GAME OVER!          |
                         |==============================|\
 """
 

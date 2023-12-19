@@ -3,6 +3,7 @@ import json
 import os.path
 import random
 from argparse import ArgumentParser
+from bisect import insort
 from enum import StrEnum, auto
 
 from constants import *
@@ -29,6 +30,8 @@ class GameState(StrEnum):
 
 class Game:
     def __init__(self, config):
+        self.upgrades = []
+
         self.config = config
         self.location_names = config.locations.replace("_", " ").split(",")
         # Discard any "" locations
@@ -38,22 +41,34 @@ class Game:
         self.next_gamestate = None
 
         self.player_name = None
+        # They are called DRONES! Not robots... Have it your way Hyperskill... for now.
         self.robots = 3
         self.titanium = 0
 
         self.savefile = "save_file.json"
         self.init_savefile()
+        self.score_file = "high_scores.json"
+        self.init_scores_file()
 
     def init_savefile(self):
         if not os.path.isfile(self.savefile):
             with open(self.savefile, "w") as f:
                 json.dump({"1": {}, "2": {}, "3": {}}, f, indent=2)
-                f.write("\n")
 
     def read_savefile(self):
         with open(self.savefile, "r") as f:
             savestate = json.load(f)
         return savestate
+
+    def init_scores_file(self):
+        if not os.path.isfile(self.score_file):
+            with open(self.score_file, "w") as f:
+                json.dump([], f, indent=2)
+
+    def read_scores_file(self):
+        with open(self.score_file, "r") as f:
+            high_scores = json.load(f)
+        return high_scores
 
     @staticmethod
     def _get_input(prompt, lowercase=True):
@@ -149,14 +164,15 @@ class Game:
                 self.player_name = chosen_slot["player_name"]
                 self.titanium = chosen_slot["titanium"]
                 self.robots = chosen_slot["robots"]
+                self.upgrades = chosen_slot["upgrades"]
 
-                print(LOADED, sep="\n\n")
+                print(LOADED, end="\n\n")
                 print(GREETING.format(self.player_name), end="\n\n")
 
                 self.set_state(GameState.play)
                 break
             elif command == "back":
-                self.set_state(GameState.game_menu)
+                self.set_state(GameState.main_menu)
                 break
             else:
                 print(INVALID_INPUT)
@@ -187,7 +203,8 @@ class Game:
                 print(INVALID_INPUT, end="\n\n")
 
     def play(self):
-        print(HUB.format(self.titanium), end="\n\n")
+        self._print_hub(5, "|")
+        print()
 
         while True:
             command = self._get_input(COMMAND)
@@ -207,6 +224,23 @@ class Game:
             else:
                 print(INVALID_INPUT, end="\n\n")
 
+    def _print_hub(self, padding, separator):
+        padding = padding * " "
+        drones = []
+        for line in DRONE.split("\n"):
+            # Extra empty column before the first drone
+            new_line = [" "]
+            for i in range(self.robots):
+                new_line.append(
+                    padding
+                    + line
+                    # No characters after the last drone
+                    + (padding + separator if i < self.robots - 1 else "")
+                )
+            drones.append("".join(new_line))
+        drones = "\n".join(drones)
+        print(HUB.format(drones, self.titanium))
+
     def explore(self):
         locations_generator = self._get_locations(1, 9)
 
@@ -220,7 +254,15 @@ class Game:
                     locations = next(locations_generator)
 
                     for location_id, location_data in locations.items():
-                        print(f"[{location_id}] {location_data['name']}")
+                        output = [f"[{location_id}] {location_data['name']}"]
+                        if "1" in self.upgrades:
+                            output.append(f"Titanium:{location_data['titanium']}")
+                        if "2" in self.upgrades:
+                            output.append(
+                                f"Encounter_rate:{location_data['encounter_rate']:.0%}"
+                            )
+                        output = " ".join(output)
+                        print(output)
                     print()
 
                     print("[S] to continue searching")
@@ -234,18 +276,34 @@ class Game:
 
             elif command.isdigit() and int(command) in locations:
                 command = int(command)
+                location = locations[command]
 
-                chosen_location = locations[command]["name"]
-                titanium_found = locations[command]["titanium"]
-                print(
-                    f"Deploying robots\n"
-                    f"{chosen_location} explored successfully, with no damage taken.\n"
-                    f"Acquired {titanium_found} lumps of titanium."
-                )
-                self.titanium += titanium_found
-                # Here I'd ask the player to acknowledge, where it not for
-                # the specification
-                break
+                is_encounter = random.random() < location["encounter_rate"]
+
+                print(f"Deploying robots...")
+                if is_encounter and self.robots <= 1:
+                    print("Enemy encounter!!!")
+                    print("Mission aborted, the last robot lost...")
+                    print(GAME_OVER, end="\n\n")
+                    self.save_score()
+                    self.set_state(GameState.main_menu)
+                    return
+                else:
+                    if is_encounter:
+                        print("Enemy encounter")
+                    print(f"{location['name']} explored successfully, ", end="")
+                    print("1 robot lost." if is_encounter else "with no damage taken.")
+                    print(
+                        f"Acquired {location['titanium']} lumps of titanium.",
+                        end="\n\n",
+                    )
+
+                    self.titanium += location["titanium"]
+                    if is_encounter:
+                        self.robots -= 1
+                    # Here I'd ask the player to acknowledge, where it not for
+                    # the specification
+                    break
 
             else:
                 print(INVALID_INPUT, end="\n\n")
@@ -253,6 +311,18 @@ class Game:
             command = self._get_input(COMMAND)
 
         self.set_state(GameState.play)
+
+    def save_score(self):
+        high_scores = self.read_scores_file()
+
+        # Note the minus in the lambda. It should ensure that high scores are sorted
+        # in reverse (descending) order.
+        insort(high_scores, [self.titanium, self.player_name], key=lambda x: -x[0])
+        while len(high_scores) > 10:
+            high_scores.pop()
+
+        with open(self.score_file, "w") as f:
+            json.dump(high_scores, f)
 
     def _get_locations(self, min_number, max_number):
         number_of_locations = random.randint(min_number, max_number)
@@ -263,6 +333,7 @@ class Game:
             locations[i] = {
                 "name": random.choice(self.location_names),
                 "titanium": random.randint(10, 100),
+                "encounter_rate": random.random(),
             }
 
             yield locations
@@ -282,6 +353,7 @@ class Game:
                     "player_name": self.player_name,
                     "titanium": self.titanium,
                     "robots": self.robots,
+                    "upgrades": self.upgrades,
                     "last_save": str(datetime.datetime.now()),
                 }
                 self.save(savestate)
@@ -316,8 +388,40 @@ class Game:
             json.dump(savestate, f, indent=2)
 
     def upgrade(self):
-        print(COMING_SOON, end="\n\n")
-        self.set_state(GameState.play)
+        print(UPGRADE_MENU)
+
+        while True:
+            command = self._get_input(COMMAND)
+
+            if command == "back":
+                self.set_state(GameState.play)
+                break
+            elif command in UPGRADES:
+                upgrade = UPGRADES[command]
+                if self.titanium < upgrade["price"]:
+                    print("Not enough titanium!")
+                elif upgrade["name"] in self.upgrades:
+                    print(f"You already own {upgrade['name']}!")
+                else:
+                    self.upgrades.append(command)
+                    self.titanium -= upgrade["price"]
+                    print(f"Purchase successful. {upgrade['description']}")
+                    break
+            elif command in ITEMS:
+                # Luckily a new robot is the only item in the shop
+                new_robot = ITEMS[command]
+                if self.titanium < new_robot["price"]:
+                    print("Not enough titanium!")
+                elif self.robots >= 4:
+                    print("Robot bay at max capacity!")
+                else:
+                    self.robots += 1
+                    self.titanium -= new_robot["price"]
+                    print(f"Purchase successful. {new_robot['description']}")
+                    break
+            else:
+                print(INVALID_INPUT)
+        self.gamestate = GameState.play
 
     def game_menu(self):
         print(MENU, end="\n\n")
@@ -341,7 +445,16 @@ class Game:
                 print(INVALID_INPUT, end="\n\n")
 
     def high_scores(self):
-        print("No scores to display.", "    [Back]", end="\n\n")
+        high_scores = self.read_scores_file()
+
+        if not high_scores:
+            print("No scores to display.")
+        else:
+            print("HIGH SCORES", end="\n\n")
+            for number, (score, name) in enumerate(high_scores, start=1):
+                number = f"({number})"
+                print(f"{number:<4} {name} {score}")
+        print("[Back]", end="\n\n")
 
         command = self._get_input(COMMAND)
 
@@ -354,8 +467,15 @@ class Game:
                 command = self._get_input(COMMAND)
 
     def help(self):
-        print(COMING_SOON, end="\n\n")
-        self.set_state(GameState.play)
+        print(HELP, end="\n\n")
+
+        while True:
+            command = input(COMMAND)
+            if command == "back":
+                self.set_state(GameState.main_menu)
+                break
+            else:
+                print(INVALID_INPUT, end="\n\n")
 
 
 def get_config():
