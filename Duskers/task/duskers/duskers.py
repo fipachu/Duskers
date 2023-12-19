@@ -172,7 +172,7 @@ class Game:
                 self.set_state(GameState.play)
                 break
             elif command == "back":
-                self.set_state(GameState.game_menu)
+                self.set_state(GameState.main_menu)
                 break
             else:
                 print(INVALID_INPUT)
