@@ -8,6 +8,18 @@ TITLE = """\
                                 (Survival ASCII Strategy Game)
 +===========================================================================================+\
 """
+HELP = """\
+  Strategic game inspired by Tim Keenan's "Duskers".
+
+  You're in charge of a team of drones exploring mysterious locations
+  and looking for titanium.
+
+  To play the game, enter commands provided in square braces (ex. [Back]).
+  Command are case-insensitive (back, Back, and bAcK all map to [Back]).
+
+  Keep an aye on your drone bay! When you lose all your drones, the game is over!
+  [Back]\
+"""
 HUB = """\
 __________(LOG)__________________________________________________(LOG)__________
 +==============================================================================+

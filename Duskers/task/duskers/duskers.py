@@ -467,8 +467,15 @@ class Game:
                 command = self._get_input(COMMAND)
 
     def help(self):
-        print(COMING_SOON, end="\n\n")
-        self.set_state(GameState.play)
+        print(HELP, end="\n\n")
+
+        while True:
+            command = input(COMMAND)
+            if command == "back":
+                self.set_state(GameState.main_menu)
+                break
+            else:
+                print(INVALID_INPUT, end="\n\n")
 
 
 def get_config():
