@@ -3,6 +3,7 @@ import json
 import os.path
 import random
 from argparse import ArgumentParser
+from bisect import insort
 from enum import StrEnum, auto
 
 from constants import *
@@ -46,17 +47,28 @@ class Game:
 
         self.savefile = "save_file.json"
         self.init_savefile()
+        self.score_file = "high_scores.json"
+        self.init_scores_file()
 
     def init_savefile(self):
         if not os.path.isfile(self.savefile):
             with open(self.savefile, "w") as f:
                 json.dump({"1": {}, "2": {}, "3": {}}, f, indent=2)
-                f.write("\n")
 
     def read_savefile(self):
         with open(self.savefile, "r") as f:
             savestate = json.load(f)
         return savestate
+
+    def init_scores_file(self):
+        if not os.path.isfile(self.score_file):
+            with open(self.score_file, "w") as f:
+                json.dump([], f, indent=2)
+
+    def read_scores_file(self):
+        with open(self.score_file, "r") as f:
+            high_scores = json.load(f)
+        return high_scores
 
     @staticmethod
     def _get_input(prompt, lowercase=True):
@@ -273,6 +285,7 @@ class Game:
                     print("Enemy encounter!!!")
                     print("Mission aborted, the last robot lost...")
                     print(GAME_OVER)
+                    self.save_score()
                     self.set_state(GameState.main_menu)
                     break
                 else:
@@ -298,6 +311,18 @@ class Game:
             command = self._get_input(COMMAND)
 
         self.set_state(GameState.play)
+
+    def save_score(self):
+        high_scores = self.read_scores_file()
+
+        # Note the minus in the lambda. It should ensure that high scores are sorted
+        # in reverse (descending) order.
+        insort(high_scores, [self.titanium, self.player_name], key=lambda x: -x[0])
+        while len(high_scores) > 10:
+            high_scores.pop()
+
+        with open(self.score_file, "w") as f:
+            json.dump(high_scores, f)
 
     def _get_locations(self, min_number, max_number):
         number_of_locations = random.randint(min_number, max_number)
